@@ -33,7 +33,7 @@ if (isset($_GET['action'])) {
 
             case 'getProducts':
                 $conn = getDBConnection();
-                $stmt = $conn->prepare("SELECT product_id, product_name, description, color_code, selling_price, purchase_price, is_active, display_order, created_at FROM products ORDER BY display_order ASC, product_name ASC");
+                $stmt = $conn->prepare("SELECT product_id, product_name, description, color_code, selling_price, purchase_price, download_url, is_active, display_order, created_at FROM products ORDER BY display_order ASC, product_name ASC");
                 $stmt->execute();
                 $result = $stmt->get_result();
 
@@ -46,6 +46,7 @@ if (isset($_GET['action'])) {
                         'color_code'     => $row['color_code'] ?? '#0078D4',
                         'selling_price'  => (float)($row['selling_price'] ?? 0),
                         'purchase_price' => (float)($row['purchase_price'] ?? 0),
+                        'download_url'   => $row['download_url'] ?? '',
                         'is_active'      => (bool)$row['is_active'],
                         'display_order'  => (int)$row['display_order'],
                         'created_at'     => date('M d, Y', strtotime($row['created_at']))
@@ -69,6 +70,7 @@ if (isset($_GET['action'])) {
                 $display_order  = isset($_POST['display_order'])   ? intval($_POST['display_order']) : 0;
                 $selling_price  = isset($_POST['selling_price'])   ? floatval($_POST['selling_price'])  : 0;
                 $purchase_price = isset($_POST['purchase_price'])  ? floatval($_POST['purchase_price']) : 0;
+                $download_url   = isset($_POST['download_url'])    ? trim($_POST['download_url'])   : '';
 
                 if (empty($product_name)) {
                     echo json_encode(['success' => false, 'message' => 'Product name is required']);
@@ -80,10 +82,11 @@ if (isset($_GET['action'])) {
                 }
 
                 $descVal = !empty($description) ? $description : null;
+                $downloadVal = !empty($download_url) ? $download_url : null;
 
                 $conn = getDBConnection();
-                $stmt = $conn->prepare("INSERT INTO products (product_name, description, color_code, display_order, selling_price, purchase_price, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)");
-                $stmt->bind_param("sssidd", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price);
+                $stmt = $conn->prepare("INSERT INTO products (product_name, description, color_code, display_order, selling_price, purchase_price, download_url, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
+                $stmt->bind_param("sssiddss", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal);
 
                 if ($stmt->execute()) {
                     logActivity($user_id, $username, 'Product Created', "Created product: $product_name");
@@ -95,7 +98,7 @@ if (isset($_GET['action'])) {
                     if ($errno === 1062) {
                         echo json_encode(['success' => false, 'message' => 'Product name already exists']);
                     } else {
-                        echo json_encode(['success' => false, 'message' => 'Failed to add product']);
+                        echo json_encode(['success' => false, 'message' => 'Failed to add product: ' . $conn->error]);
                     }
                 }
                 exit();
@@ -114,6 +117,7 @@ if (isset($_GET['action'])) {
                 $is_active      = isset($_POST['is_active'])        ? intval($_POST['is_active'])    : 1;
                 $selling_price  = isset($_POST['selling_price'])    ? floatval($_POST['selling_price'])  : 0;
                 $purchase_price = isset($_POST['purchase_price'])   ? floatval($_POST['purchase_price']) : 0;
+                $download_url   = isset($_POST['download_url'])     ? trim($_POST['download_url'])   : '';
 
                 if ($product_id <= 0 || empty($product_name)) {
                     echo json_encode(['success' => false, 'message' => 'Invalid input']);
@@ -125,10 +129,11 @@ if (isset($_GET['action'])) {
                 }
 
                 $descVal = !empty($description) ? $description : null;
+                $downloadVal = !empty($download_url) ? $download_url : null;
 
                 $conn = getDBConnection();
-                $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, color_code = ?, display_order = ?, selling_price = ?, purchase_price = ?, is_active = ? WHERE product_id = ?");
-                $stmt->bind_param("sssiddii", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $is_active, $product_id);
+                $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, color_code = ?, display_order = ?, selling_price = ?, purchase_price = ?, download_url = ?, is_active = ? WHERE product_id = ?");
+                $stmt->bind_param("sssiddssi", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal, $is_active, $product_id);
 
                 if ($stmt->execute()) {
                     logActivity($user_id, $username, 'Product Updated', "Updated product: $product_name");
@@ -344,6 +349,12 @@ if (isset($_GET['action'])) {
                         <div class="form-group">
                             <label><i class="fas fa-align-left"></i> Description</label>
                             <input type="text" id="formDescription" name="description">
+                        </div>
+
+                        <div class="form-group span-2">
+                            <label><i class="fas fa-download"></i> Extension / Product Download URL</label>
+                            <input type="url" id="formDownloadUrl" name="download_url" placeholder="https://yourserver.com/files/extension.zip">
+                            <div class="help-text">Direct link for the user to download the extension zip or digital product.</div>
                         </div>
 
                         <div class="form-group">
@@ -610,6 +621,7 @@ if (isset($_GET['action'])) {
             document.getElementById('formDisplayOrder').value = '0';
             document.getElementById('formSellingPrice').value = '0';
             document.getElementById('formPurchasePrice').value = '0';
+            document.getElementById('formDownloadUrl').value  = '';
             document.getElementById('activeGroup').style.display = 'none';
             document.getElementById('productModal').classList.add('active');
         }
@@ -626,6 +638,7 @@ if (isset($_GET['action'])) {
             document.getElementById('formDisplayOrder').value  = cat.display_order;
             document.getElementById('formSellingPrice').value  = cat.selling_price || 0;
             document.getElementById('formPurchasePrice').value = cat.purchase_price || 0;
+            document.getElementById('formDownloadUrl').value   = cat.download_url || '';
             document.getElementById('formIsActive').value      = cat.is_active ? '1' : '0';
             document.getElementById('activeGroup').style.display = '';
             document.getElementById('productModal').classList.add('active');

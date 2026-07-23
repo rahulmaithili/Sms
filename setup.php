@@ -173,6 +173,7 @@ session_start();
             color_code VARCHAR(7) NOT NULL DEFAULT '#0078D4',
             selling_price DECIMAL(12,3) NOT NULL DEFAULT 0.000,
             purchase_price DECIMAL(12,3) NOT NULL DEFAULT 0.000,
+            download_url VARCHAR(500) DEFAULT NULL,
             is_active TINYINT(1) NOT NULL DEFAULT 1,
             display_order INT NOT NULL DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

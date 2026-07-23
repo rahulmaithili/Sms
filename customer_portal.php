@@ -50,8 +50,8 @@ if (isset($_GET['action'])) {
                 $conn = getDBConnection();
                 $currency = getCurrency();
 
-                $stmt = $conn->prepare("SELECT s.sl, s.invoice_no, s.customer_name,
-                        s.product_id, p.product_name, p.color_code,
+                 $stmt = $conn->prepare("SELECT s.sl, s.invoice_no, s.customer_name,
+                        s.product_id, p.product_name, p.color_code, p.download_url AS product_download_url,
                         s.invoice_date, s.starting_date, s.expiry_date,
                         s.product_description, s.user_qty, s.license_duration,
                         s.selling_price, s.tax_amount, s.total_amount,
@@ -101,7 +101,8 @@ if (isset($_GET['action'])) {
                         'days_left'           => $days_left,
                         'status_label'        => $status['label'],
                         'status_class'        => $status['class'],
-                        'product_key'         => $row['product_key'] ?? ''
+                        'product_key'         => $row['product_key'] ?? '',
+                        'product_download_url'=> $row['product_download_url'] ?? ''
                     ];
                 }
                 $stmt->close();
@@ -608,6 +609,10 @@ if (isset($_GET['action'])) {
                             // Pay Now button — only if not fully paid
                             if (row.payment_status !== 'Paid') {
                                 html += ' <button class="action-icon" onclick="startRazorpayPayment(' + row.sl + ', \'' + escapeQuote(row.invoice_no) + '\', ' + parseFloat(row.total_amount || 0) + ')" title="Pay Now" style="background:#28a745;color:#fff;border:none;border-radius:4px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-credit-card"></i> Pay Now</button>';
+                            }
+                            // Download button — only if paid and download link is available
+                            if (row.payment_status === 'Paid' && row.product_download_url) {
+                                html += ' <a href="' + encodeURI(row.product_download_url) + '" class="action-icon" title="Download Product/Extension" target="_blank" style="background:#0074D9;color:#fff;border-radius:4px;padding:4px 10px;font-size:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin-left:4px;"><i class="fas fa-download"></i> Download</a>';
                             }
                             return html;
                         }

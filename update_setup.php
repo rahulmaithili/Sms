@@ -249,6 +249,14 @@ if ($r && $r->num_rows === 0) {
     $logs[] = ['success', 'Added onboarding_complete setting'];
 } else { $logs[] = ['skip', 'onboarding_complete setting already exists']; }
 
+// 16. Add download_url column to products
+$r = $conn->query("SHOW COLUMNS FROM products LIKE 'download_url'");
+if ($r && $r->num_rows === 0) {
+    runSafe($conn, "ALTER TABLE products ADD COLUMN download_url VARCHAR(500) DEFAULT NULL AFTER purchase_price", "Added download_url to products table", $logs);
+} else {
+    $logs[] = ['skip', 'products.download_url already exists'];
+}
+
 logActivity($_SESSION['user_id'], $_SESSION['username'], 'DB Update', 'Ran update_setup.php');
 ?>
 <!DOCTYPE html>
