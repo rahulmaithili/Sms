@@ -1,0 +1,25 @@
+# Sensitive config — never push to GitHub
+config.php
+
+# Error logs
+error_log.txt
+*.log
+
+# Uploaded files (user data)
+uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# PHP temp files
+*.tmp
+*.bak
+*.swp
