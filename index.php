@@ -546,10 +546,10 @@ $currency = getCurrency();
                 <?php else: ?>
                     <?php foreach ($products as $prod): 
                         $bg = $prod['color_code'] ?? '#0078D4';
-                        $r = parseInt_color(substr($bg, 1, 2)), $g = parseInt_color(substr($bg, 3, 2)), $b = parseInt_color(substr($bg, 5, 2));
+                        $r = hexdec(substr($bg, 1, 2)); 
+                        $g = hexdec(substr($bg, 3, 2)); 
+                        $b = hexdec(substr($bg, 5, 2));
                         $tc = ($r*0.299 + $g*0.587 + $b*0.114) > 186 ? '#000' : '#fff';
-                        
-                        function parseInt_color($hex) { return hexdec($hex); }
                     ?>
                         <div class="pricing-card">
                             <div class="pricing-header" style="border-top: 4px solid <?php echo $bg; ?>;">
