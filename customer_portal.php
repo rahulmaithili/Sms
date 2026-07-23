@@ -56,7 +56,7 @@ if (isset($_GET['action'])) {
                         s.product_description, s.user_qty, s.license_duration,
                         s.selling_price, s.tax_amount, s.total_amount,
                         s.payment_status, s.payment_method, s.payment_date,
-                        s.auto_renew, s.priority, s.contract_reference, s.remarks
+                        s.auto_renew, s.priority, s.contract_reference, s.remarks, s.product_key
                     FROM subscriptions s
                     LEFT JOIN products p ON s.product_id = p.product_id
                     WHERE s.customer_id = ?
@@ -100,7 +100,8 @@ if (isset($_GET['action'])) {
                         'remarks'             => $row['remarks'] ?? '',
                         'days_left'           => $days_left,
                         'status_label'        => $status['label'],
-                        'status_class'        => $status['class']
+                        'status_class'        => $status['class'],
+                        'product_key'         => $row['product_key'] ?? ''
                     ];
                 }
                 $stmt->close();
@@ -544,6 +545,15 @@ if (isset($_GET['action'])) {
                             var r = parseInt(bg.substr(1,2), 16), g = parseInt(bg.substr(3,2), 16), b = parseInt(bg.substr(5,2), 16);
                             var tc = (r*0.299 + g*0.587 + b*0.114) > 186 ? '#000' : '#fff';
                             return '<span class="cat-badge" style="background:' + bg + ';color:' + tc + '">' + escapeHtml(data) + '</span>';
+                        }
+                    },
+                    {
+                        data: 'product_key',
+                        title: 'License Key',
+                        defaultContent: '-',
+                        render: function(data) {
+                            if (!data) return '-';
+                            return '<code style="background:#e8f4fd;color:#0074D9;padding:4px 8px;border-radius:4px;font-family:monospace;font-weight:bold;user-select:all;border:1px solid #b8daff;" title="Double click to copy">' + escapeHtml(data) + '</code>';
                         }
                     },
                     { data: 'starting_date', title: 'Start Date', defaultContent: '-' },
