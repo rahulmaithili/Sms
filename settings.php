@@ -65,6 +65,8 @@ if (isset($_POST['action'])) {
                     // Company contact
                     'company_website'            => getSetting('company_website',            ''),
                     'company_phone'              => getSetting('company_phone',              ''),
+                    // GitHub Integration
+                    'github_token'               => getSetting('github_token',               ''),
                     // Razorpay
                     'razorpay_enabled'           => getSetting('razorpay_enabled',           '0'),
                     'razorpay_key_id'            => getSetting('razorpay_key_id',            ''),
@@ -179,6 +181,7 @@ if (isset($_POST['action'])) {
             setSetting('gemini_api_key',             $gemini_api_key,           $user_id);
             setSetting('company_website',            trim($_POST['company_website'] ?? ''), $user_id);
             setSetting('company_phone',              trim($_POST['company_phone']   ?? ''), $user_id);
+            setSetting('github_token',               trim($_POST['github_token']    ?? ''), $user_id);
 
             // Legacy / backward-compat sync
             setSetting('site_name', $company_name, $user_id);
@@ -788,6 +791,32 @@ if (isset($_POST['action'])) {
                     </div>
                 </div>
 
+                <!-- ── GitHub Automation Settings ──────────────── -->
+                <div class="settings-mega-card mb-24">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon icon-gradient-navy">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div>
+                            <h3 class="settings-card-title">GitHub Integration Settings</h3>
+                            <p class="settings-card-subtitle">Connect your GitHub repositories for automated ZIP downloads &amp; updates</p>
+                        </div>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="form-grid">
+                            <!-- GitHub PAT -->
+                            <div class="form-group span-2">
+                                <label><i class="fab fa-github"></i> GitHub Personal Access Token (PAT)</label>
+                                <input type="password" id="githubToken" placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" autocomplete="off">
+                                <div class="help-text">
+                                    Required if your repositories are **Private**. Generate a classic token with <code>repo</code> scope at 
+                                    <a href="https://github.com/settings/tokens" target="_blank" style="color:#0074D9;font-weight:600;">GitHub Settings → Developer Settings → Personal Access Tokens</a>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ── Save All Button ──────────────────────────── -->
                 <div class="save-all-wrap">
                     <button class="btn-save-all" id="saveAllBtn" onclick="saveSettings()">
@@ -890,6 +919,9 @@ if (isset($_POST['action'])) {
                 // Never prefill secret — only show placeholder
                 document.getElementById('razorpayKeySecret').placeholder = d.razorpay_key_secret ? '(saved — enter new to change)' : '••••••••••••••••••';
 
+                // GitHub Token Settings
+                setVal('githubToken', d.github_token || '');
+
                 // Show form, hide skeleton
                 document.getElementById('skeletonWrap').style.display = 'none';
                 document.getElementById('settingsWrap').style.display  = 'block';
@@ -932,7 +964,8 @@ if (isset($_POST['action'])) {
                 default_language:           getVal('defaultLanguage'),
                 gemini_api_key:            document.getElementById('settGeminiApiKey').value,
                 company_website:           getVal('companyWebsite'),
-                company_phone:             getVal('companyPhone')
+                company_phone:             getVal('companyPhone'),
+                github_token:              getVal('githubToken')
             },
             dataType: 'json',
             success: function(response) {

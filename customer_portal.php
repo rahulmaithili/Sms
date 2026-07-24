@@ -612,7 +612,7 @@ if (isset($_GET['action'])) {
                             }
                             // Download button — only if paid and download link is available
                             if (row.payment_status === 'Paid' && row.product_download_url) {
-                                html += ' <a href="' + encodeURI(row.product_download_url) + '" class="action-icon" title="Download Product/Extension" target="_blank" style="background:#0074D9;color:#fff;border-radius:4px;padding:4px 10px;font-size:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin-left:4px;"><i class="fas fa-download"></i> Download</a>';
+                                html += ' <a href="download.php?sl=' + row.sl + '" class="action-icon" title="Download Product/Extension" target="_blank" style="background:#0074D9;color:#fff;border-radius:4px;padding:4px 10px;font-size:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin-left:4px;"><i class="fas fa-download"></i> Download</a>';
                             }
                             return html;
                         }
