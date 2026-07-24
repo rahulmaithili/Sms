@@ -60,6 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = isset($_POST['email']) ? trim($_POST['email']) : '';
         $password = isset($_POST['password']) ? $_POST['password'] : '';
         $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
+        $company_name = isset($_POST['company_name']) ? trim($_POST['company_name']) : '';
+        $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
+        $city = isset($_POST['city']) ? trim($_POST['city']) : '';
+        $country = isset($_POST['country']) ? trim($_POST['country']) : '';
 
         // Input validation
         $username = validateUsername($username);
@@ -69,6 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error = 'Invalid username. Use 3-50 alphanumeric characters or underscores.';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = 'Please enter a valid email address.';
+        } elseif (empty($company_name)) {
+            $error = 'Full Name / Company Name is required.';
+        } elseif (empty($phone)) {
+            $error = 'Contact Number is required.';
         } elseif ($password === false) {
             $error = 'Password must be between 6 and 255 characters.';
         } elseif ($password !== $confirm_password) {
@@ -101,48 +109,78 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     } else {
                         $stmt->close();
 
-                        // Hash password and create user
-                        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                        $role = 'user';
-                        $full_name = ucfirst($username);
+                        // 1. Create entry in customers table
+                        // We use user_id = 1 (System Admin) as the creator for auto-signed up customers
+                        $added_by = 1; 
+                        $cust_stmt = $conn->prepare("INSERT INTO customers (company_name, contact_person, email, phone, city, country, added_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                        $cust_stmt->bind_param("ssssssi", $company_name, $company_name, $email, $phone, $city, $country, $added_by);
+                        
+                        if ($cust_stmt->execute()) {
+                            $new_customer_id = $cust_stmt->insert_id;
+                            $cust_stmt->close();
 
-                        $stmt = $conn->prepare("INSERT INTO users (username, full_name, password, email, role, is_active) VALUES (?, ?, ?, ?, ?, 1)");
-                        $stmt->bind_param("sssss", $username, $full_name, $hashed_password, $email, $role);
+                            // 2. Hash password and create user linked to this customer
+                            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                            $role = 'customer'; // Default role is customer
 
-                        if ($stmt->execute()) {
-                            $new_user_id = $stmt->insert_id;
-                            $stmt->close();
+                            $stmt = $conn->prepare("INSERT INTO users (username, full_name, password, email, role, customer_id, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)");
+                            $stmt->bind_param("sssssi", $username, $company_name, $hashed_password, $email, $role, $new_customer_id);
 
-                            // Log the signup
-                            logActivity($new_user_id, $username, 'Signup', 'New user registered');
+                            if ($stmt->execute()) {
+                                $new_user_id = $stmt->insert_id;
+                                $stmt->close();
 
-                            // Notify admins about new registration
-                            try { createNotificationForAdmins('New User Registered', 'User "' . htmlspecialchars($username) . '" has signed up.', 'info', 'users.php'); } catch (Exception $e) {}
+                                // Log the signup
+                                logActivity($new_user_id, $username, 'Signup', 'New customer registered and profile linked');
 
-                            // Check if email verification is enabled
-                            $verification_enabled = getSetting('email_verification_enabled', '0');
-                            $smtp_enabled = getSetting('smtp_enabled', '0');
+                                // Notify admins about new registration
+                                try { createNotificationForAdmins('New User Registered', 'Customer "' . htmlspecialchars($company_name) . '" has signed up.', 'info', 'users.php'); } catch (Exception $e) {}
 
-                            if ($verification_enabled === '1' && $smtp_enabled === '1') {
-                                // Send OTP email for verification
-                                $otp = createEmailVerification($new_user_id, $email);
-                                $emailBody = getOTPEmailTemplate($otp, 'verify');
-                                sendEmail($email, 'Verify Your Email - ' . $branding['site_name'], $emailBody);
+                                // Check if email verification is enabled
+                                $verification_enabled = getSetting('email_verification_enabled', '0');
+                                $smtp_enabled = getSetting('smtp_enabled', '0');
 
-                                header("Location: verify_otp.php?email=" . urlencode($email));
-                                exit();
+                                if ($verification_enabled === '1' && $smtp_enabled === '1') {
+                                    // Send OTP email for verification
+                                    $otp = createEmailVerification($new_user_id, $email);
+                                    $emailBody = getOTPEmailTemplate($otp, 'verify');
+                                    sendEmail($email, 'Verify Your Email - ' . $branding['site_name'], $emailBody);
+
+                                    header("Location: verify_otp.php?email=" . urlencode($email));
+                                    exit();
+                                } else {
+                                    // Auto-verify if email verification is disabled
+                                    $verify_stmt = $conn->prepare("UPDATE users SET email_verified = 1 WHERE user_id = ?");
+                                    $verify_stmt->bind_param("i", $new_user_id);
+                                    $verify_stmt->execute();
+                                    $verify_stmt->close();
+
+                                    // AUTO-LOGIN customer immediately
+                                    session_regenerate_id(true);
+                                    $_SESSION['user_id'] = $new_user_id;
+                                    $_SESSION['username'] = $username;
+                                    $_SESSION['full_name'] = $company_name;
+                                    $_SESSION['role'] = 'customer';
+                                    $_SESSION['customer_id'] = $new_customer_id;
+                                    $_SESSION['LAST_ACTIVITY'] = time();
+
+                                    // Update last_login
+                                    $login_update = $conn->prepare("UPDATE users SET last_login = NOW(), login_count = login_count + 1 WHERE user_id = ?");
+                                    $login_update->bind_param("i", $new_user_id);
+                                    $login_update->execute();
+                                    $login_update->close();
+
+                                    // Redirect straight to Customer Portal
+                                    header("Location: customer_portal.php");
+                                    exit();
+                                }
                             } else {
-                                // Auto-verify if email verification is disabled
-                                $verify_stmt = $conn->prepare("UPDATE users SET email_verified = 1 WHERE user_id = ?");
-                                $verify_stmt->bind_param("i", $new_user_id);
-                                $verify_stmt->execute();
-                                $verify_stmt->close();
+                                $error = 'Registration failed. Please try again.';
+                                $stmt->close();
                             }
-
-                            $success = 'Account created successfully! You can now login.';
                         } else {
-                            $error = 'Registration failed. Please try again.';
-                            $stmt->close();
+                            $error = 'Failed to create customer profile. Please try again.';
+                            $cust_stmt->close();
                         }
                     }
                 }
@@ -194,22 +232,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
 
                 <div class="form-group">
-                    <label><i class="fas fa-user"></i> Username</label>
+                    <label><i class="fas fa-user"></i> Username *</label>
                     <input type="text" name="username" required autofocus autocomplete="username" minlength="3" maxlength="50" placeholder="Choose a username" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>">
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" name="email" required autocomplete="email" maxlength="100" placeholder="Enter your email" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                    <label><i class="fas fa-id-card"></i> Full Name / Company Name *</label>
+                    <input type="text" name="company_name" required placeholder="Your full name or company name" value="<?php echo isset($_POST['company_name']) ? htmlspecialchars($_POST['company_name']) : ''; ?>">
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Password</label>
+                    <label><i class="fas fa-envelope"></i> Email Address *</label>
+                    <input type="email" name="email" required autocomplete="email" maxlength="100" placeholder="Enter your email address" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Contact Number *</label>
+                    <input type="text" name="phone" required placeholder="Enter your phone or mobile number" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>">
+                </div>
+
+                <div style="display:flex; gap:12px;">
+                    <div class="form-group" style="flex:1;">
+                        <label><i class="fas fa-city"></i> City</label>
+                        <input type="text" name="city" placeholder="e.g. Delhi" value="<?php echo isset($_POST['city']) ? htmlspecialchars($_POST['city']) : ''; ?>">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label><i class="fas fa-globe"></i> Country</label>
+                        <input type="text" name="country" placeholder="e.g. India" value="<?php echo isset($_POST['country']) ? htmlspecialchars($_POST['country']) : ''; ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password *</label>
                     <input type="password" name="password" required autocomplete="new-password" minlength="6" placeholder="Minimum 6 characters">
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Confirm Password</label>
+                    <label><i class="fas fa-lock"></i> Confirm Password *</label>
                     <input type="password" name="confirm_password" required autocomplete="new-password" minlength="6" placeholder="Confirm your password">
                 </div>
 
