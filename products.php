@@ -86,7 +86,7 @@ if (isset($_GET['action'])) {
 
                 $conn = getDBConnection();
                 $stmt = $conn->prepare("INSERT INTO products (product_name, description, color_code, display_order, selling_price, purchase_price, download_url, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
-                $stmt->bind_param("sssiddss", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal);
+                $stmt->bind_param("sssidds", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal);
 
                 if ($stmt->execute()) {
                     logActivity($user_id, $username, 'Product Created', "Created product: $product_name");
@@ -133,7 +133,7 @@ if (isset($_GET['action'])) {
 
                 $conn = getDBConnection();
                 $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, color_code = ?, display_order = ?, selling_price = ?, purchase_price = ?, download_url = ?, is_active = ? WHERE product_id = ?");
-                $stmt->bind_param("sssiddssi", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal, $is_active, $product_id);
+                $stmt->bind_param("sssiddsii", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal, $is_active, $product_id);
 
                 if ($stmt->execute()) {
                     logActivity($user_id, $username, 'Product Updated', "Updated product: $product_name");
