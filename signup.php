@@ -56,14 +56,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!isset($_POST['csrf_token']) || !validateCSRFToken($_POST['csrf_token'])) {
         $error = 'Invalid request. Please try again.';
     } else {
-        $username = isset($_POST['username']) ? $_POST['username'] : '';
-        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        $username         = isset($_POST['username']) ? $_POST['username'] : '';
+        $email            = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $password         = isset($_POST['password']) ? $_POST['password'] : '';
         $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
-        $company_name = isset($_POST['company_name']) ? trim($_POST['company_name']) : '';
-        $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
-        $city = isset($_POST['city']) ? trim($_POST['city']) : '';
-        $country = isset($_POST['country']) ? trim($_POST['country']) : '';
+        
+        // Basic customer fields
+        $company_name     = isset($_POST['company_name']) ? trim($_POST['company_name']) : '';
+        $contact_person   = isset($_POST['contact_person']) ? trim($_POST['contact_person']) : '';
+        $phone            = isset($_POST['phone']) ? trim($_POST['phone']) : '';
+        $city             = isset($_POST['city']) ? trim($_POST['city']) : '';
+        $country          = isset($_POST['country']) ? trim($_POST['country']) : '';
+        $address          = isset($_POST['address']) ? trim($_POST['address']) : '';
+        $notes            = isset($_POST['notes']) ? trim($_POST['notes']) : '';
+
+        // Custom fields (Customer entity)
+        $cf_industry       = isset($_POST['cf_industry']) ? trim($_POST['cf_industry']) : '';
+        $cf_company_size   = isset($_POST['cf_company_size']) ? trim($_POST['cf_company_size']) : '';
+        $cf_tax_id         = isset($_POST['cf_tax_id']) ? trim($_POST['cf_tax_id']) : '';
+        $cf_website        = isset($_POST['cf_website']) ? trim($_POST['cf_website']) : '';
+        $cf_notes_internal = isset($_POST['cf_notes_internal']) ? trim($_POST['cf_notes_internal']) : '';
 
         // Input validation
         $username = validateUsername($username);
@@ -74,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = 'Please enter a valid email address.';
         } elseif (empty($company_name)) {
-            $error = 'Full Name / Company Name is required.';
+            $error = 'Customer / Company Name is required.';
         } elseif (empty($phone)) {
             $error = 'Contact Number is required.';
         } elseif ($password === false) {
@@ -109,15 +121,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     } else {
                         $stmt->close();
 
+                        // Start Transaction to guarantee both tables insert successfully
+                        $conn->begin_transaction();
+
                         // 1. Create entry in customers table
                         // We use user_id = 1 (System Admin) as the creator for auto-signed up customers
                         $added_by = 1; 
-                        $cust_stmt = $conn->prepare("INSERT INTO customers (company_name, contact_person, email, phone, city, country, added_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                        $cust_stmt->bind_param("ssssssi", $company_name, $company_name, $email, $phone, $city, $country, $added_by);
+                        $cust_stmt = $conn->prepare("INSERT INTO customers (company_name, contact_person, email, phone, city, country, address, notes, added_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $cust_stmt->bind_param("ssssssssi", $company_name, $contact_person, $email, $phone, $city, $country, $address, $notes, $added_by);
                         
                         if ($cust_stmt->execute()) {
                             $new_customer_id = $cust_stmt->insert_id;
                             $cust_stmt->close();
+
+                            // 1.2 Insert custom field values (matched by field IDs in custom_fields table)
+                            $custom_fields_data = [
+                                1 => $cf_industry,
+                                2 => $cf_company_size,
+                                3 => $cf_tax_id,
+                                4 => $cf_website,
+                                5 => $cf_notes_internal
+                            ];
+
+                            $val_stmt = $conn->prepare("INSERT INTO custom_field_values (field_id, entity_type, entity_id, field_value) VALUES (?, 'customer', ?, ?)");
+                            foreach ($custom_fields_data as $fid => $fval) {
+                                if ($fval !== '') {
+                                    $val_stmt->bind_param("iis", $fid, $new_customer_id, $fval);
+                                    $val_stmt->execute();
+                                }
+                            }
+                            $val_stmt->close();
 
                             // 2. Hash password and create user linked to this customer
                             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -130,8 +163,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $new_user_id = $stmt->insert_id;
                                 $stmt->close();
 
+                                // Commit all inserts
+                                $conn->commit();
+
                                 // Log the signup
-                                logActivity($new_user_id, $username, 'Signup', 'New customer registered and profile linked');
+                                logActivity($new_user_id, $username, 'Signup', 'New customer registered, profile and custom fields linked');
 
                                 // Notify admins about new registration
                                 try { createNotificationForAdmins('New User Registered', 'Customer "' . htmlspecialchars($company_name) . '" has signed up.', 'info', 'users.php'); } catch (Exception $e) {}
@@ -175,20 +211,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     exit();
                                 }
                             } else {
+                                $conn->rollback();
                                 $error = 'Registration failed. Please try again.';
                                 $stmt->close();
                             }
                         } else {
+                            $conn->rollback();
                             $error = 'Failed to create customer profile. Please try again.';
                             $cust_stmt->close();
                         }
                     }
                 }
             } catch (Exception $e) {
+                if (isset($conn)) { $conn->rollback(); }
                 if (strpos($e->getMessage(), "doesn't exist") !== false) {
                     $error = 'Database not set up. Please run <a href="setup.php" class="login-link">setup.php</a> first.';
                 } else {
-                    $error = 'An error occurred. Please contact administrator.';
+                    $error = 'An error occurred: ' . $e->getMessage();
                     error_log("Signup error: " . $e->getMessage());
                 }
             }
@@ -196,27 +235,91 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-<!--
-  Developed by Rameez Scripts
-  WhatsApp: https://wa.me/923224083545 (For Custom Projects)
-  YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <title>Sign Up - <?php echo htmlspecialchars($branding['site_name']); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css?v=7.0">
+    <style>
+        .login-box {
+            max-width: 850px;
+            width: 95%;
+            padding: 40px;
+            margin: 40px auto;
+        }
+        .signup-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            text-align: left;
+        }
+        .span-2 {
+            grid-column: span 2;
+        }
+        .section-title {
+            grid-column: span 2;
+            font-size: 15px;
+            font-weight: 700;
+            margin-top: 15px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #0074D9;
+            color: #0074D9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .dark-mode .section-title {
+            border-bottom-color: #38bdf8;
+            color: #38bdf8;
+        }
+        .form-group label {
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: #fff;
+            color: #333;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .dark-mode .form-group input, .dark-mode .form-group select, .dark-mode .form-group textarea {
+            background: #1e293b;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #0074D9;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 116, 217, 0.15);
+        }
+        @media (max-width: 768px) {
+            .signup-grid {
+                grid-template-columns: 1fr;
+            }
+            .span-2 {
+                grid-column: span 1;
+            }
+            .login-box {
+                padding: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-box">
             <img src="<?php echo htmlspecialchars($branding['site_logo']); ?>" alt="Logo" class="login-logo">
-            <h2>Create Account</h2>
+            <h2>Create Your Business Account</h2>
+            <p style="color:#666; margin-top:5px; margin-bottom:25px; font-size:14px;">Fill in your details below to get instant access to premium extensions & tools</p>
 
             <?php if ($error): ?>
                 <div class="error"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
@@ -231,49 +334,123 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <form method="POST" action="">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
 
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Username *</label>
-                    <input type="text" name="username" required autofocus autocomplete="username" minlength="3" maxlength="50" placeholder="Choose a username" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>">
-                </div>
+                <div class="signup-grid">
+                    
+                    <!-- SECTION 1: Login Account details -->
+                    <div class="section-title">
+                        <i class="fas fa-user-lock"></i> Account Credentials
+                    </div>
 
-                <div class="form-group">
-                    <label><i class="fas fa-id-card"></i> Full Name / Company Name *</label>
-                    <input type="text" name="company_name" required placeholder="Your full name or company name" value="<?php echo isset($_POST['company_name']) ? htmlspecialchars($_POST['company_name']) : ''; ?>">
-                </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username *</label>
+                        <input type="text" name="username" required autofocus autocomplete="username" minlength="3" maxlength="50" placeholder="Choose a username" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>">
+                    </div>
 
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email Address *</label>
-                    <input type="email" name="email" required autocomplete="email" maxlength="100" placeholder="Enter your email address" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
-                </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email Address *</label>
+                        <input type="email" name="email" required autocomplete="email" maxlength="100" placeholder="Enter email address" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                    </div>
 
-                <div class="form-group">
-                    <label><i class="fas fa-phone"></i> Contact Number *</label>
-                    <input type="text" name="phone" required placeholder="Enter your phone or mobile number" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>">
-                </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password *</label>
+                        <input type="password" name="password" required autocomplete="new-password" minlength="6" placeholder="Minimum 6 characters">
+                    </div>
 
-                <div style="display:flex; gap:12px;">
-                    <div class="form-group" style="flex:1;">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Confirm Password *</label>
+                        <input type="password" name="confirm_password" required autocomplete="new-password" minlength="6" placeholder="Confirm your password">
+                    </div>
+
+                    <!-- SECTION 2: General Profile Details -->
+                    <div class="section-title">
+                        <i class="fas fa-building"></i> Customer &amp; Billing Info
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-id-card"></i> Customer / Company Name *</label>
+                        <input type="text" name="company_name" required placeholder="Enter customer name" value="<?php echo isset($_POST['company_name']) ? htmlspecialchars($_POST['company_name']) : ''; ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tie"></i> Contact Person</label>
+                        <input type="text" name="contact_person" placeholder="Enter contact person name" value="<?php echo isset($_POST['contact_person']) ? htmlspecialchars($_POST['contact_person']) : ''; ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Contact Number *</label>
+                        <input type="text" name="phone" required placeholder="Enter contact number" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-globe"></i> Website</label>
+                        <input type="url" name="cf_website" placeholder="https://example.com" value="<?php echo isset($_POST['cf_website']) ? htmlspecialchars($_POST['cf_website']) : ''; ?>">
+                    </div>
+
+                    <div class="form-group">
                         <label><i class="fas fa-city"></i> City</label>
-                        <input type="text" name="city" placeholder="e.g. Delhi" value="<?php echo isset($_POST['city']) ? htmlspecialchars($_POST['city']) : ''; ?>">
+                        <input type="text" name="city" placeholder="Enter city" value="<?php echo isset($_POST['city']) ? htmlspecialchars($_POST['city']) : ''; ?>">
                     </div>
-                    <div class="form-group" style="flex:1;">
-                        <label><i class="fas fa-globe"></i> Country</label>
-                        <input type="text" name="country" placeholder="e.g. India" value="<?php echo isset($_POST['country']) ? htmlspecialchars($_POST['country']) : ''; ?>">
+
+                    <div class="form-group">
+                        <label><i class="fas fa-globe-americas"></i> Country</label>
+                        <input type="text" name="country" placeholder="Enter country" value="<?php echo isset($_POST['country']) ? htmlspecialchars($_POST['country']) : ''; ?>">
                     </div>
+
+                    <div class="form-group span-2">
+                        <label><i class="fas fa-map-marker-alt"></i> Address</label>
+                        <textarea name="address" rows="2" placeholder="Enter full address"><?php echo isset($_POST['address']) ? htmlspecialchars($_POST['address']) : ''; ?></textarea>
+                    </div>
+
+                    <!-- SECTION 3: Business profile (Custom Fields) -->
+                    <div class="section-title">
+                        <i class="fas fa-briefcase"></i> Additional Business Profile
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-industry"></i> Industry</label>
+                        <select name="cf_industry">
+                            <option value="">-- Select Industry --</option>
+                            <option value="IT" <?php echo (isset($_POST['cf_industry']) && $_POST['cf_industry'] === 'IT') ? 'selected' : ''; ?>>IT &amp; Software</option>
+                            <option value="Healthcare" <?php echo (isset($_POST['cf_industry']) && $_POST['cf_industry'] === 'Healthcare') ? 'selected' : ''; ?>>Healthcare</option>
+                            <option value="Finance" <?php echo (isset($_POST['cf_industry']) && $_POST['cf_industry'] === 'Finance') ? 'selected' : ''; ?>>Finance &amp; Banking</option>
+                            <option value="Education" <?php echo (isset($_POST['cf_industry']) && $_POST['cf_industry'] === 'Education') ? 'selected' : ''; ?>>Education</option>
+                            <option value="Retail" <?php echo (isset($_POST['cf_industry']) && $_POST['cf_industry'] === 'Retail') ? 'selected' : ''; ?>>Retail &amp; E-commerce</option>
+                            <option value="Manufacturing" <?php echo (isset($_POST['cf_industry']) && $_POST['cf_industry'] === 'Manufacturing') ? 'selected' : ''; ?>>Manufacturing</option>
+                            <option value="Other" <?php echo (isset($_POST['cf_industry']) && $_POST['cf_industry'] === 'Other') ? 'selected' : ''; ?>>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-users"></i> Company Size</label>
+                        <select name="cf_company_size">
+                            <option value="">-- Select Size --</option>
+                            <option value="1-10" <?php echo (isset($_POST['cf_company_size']) && $_POST['cf_company_size'] === '1-10') ? 'selected' : ''; ?>>1-10 Employees</option>
+                            <option value="11-50" <?php echo (isset($_POST['cf_company_size']) && $_POST['cf_company_size'] === '11-50') ? 'selected' : ''; ?>>11-50 Employees</option>
+                            <option value="51-200" <?php echo (isset($_POST['cf_company_size']) && $_POST['cf_company_size'] === '51-200') ? 'selected' : ''; ?>>51-200 Employees</option>
+                            <option value="201-500" <?php echo (isset($_POST['cf_company_size']) && $_POST['cf_company_size'] === '201-500') ? 'selected' : ''; ?>>201-500 Employees</option>
+                            <option value="500+" <?php echo (isset($_POST['cf_company_size']) && $_POST['cf_company_size'] === '500+') ? 'selected' : ''; ?>>500+ Employees</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group span-2">
+                        <label><i class="fas fa-percent"></i> Tax ID / VAT No</label>
+                        <input type="text" name="cf_tax_id" placeholder="Enter Tax ID or VAT Registration Number" value="<?php echo isset($_POST['cf_tax_id']) ? htmlspecialchars($_POST['cf_tax_id']) : ''; ?>">
+                    </div>
+
+                    <div class="form-group span-2">
+                        <label><i class="fas fa-sticky-note"></i> Public Notes / Special Instructions</label>
+                        <textarea name="notes" rows="2" placeholder="Any additional notes or instructions for billing..."><?php echo isset($_POST['notes']) ? htmlspecialchars($_POST['notes']) : ''; ?></textarea>
+                    </div>
+
+                    <div class="form-group span-2">
+                        <label><i class="fas fa-file-invoice"></i> Internal Notes (Private to Admin)</label>
+                        <textarea name="cf_notes_internal" rows="2" placeholder="Enter any private remarks or internal details..."><?php echo isset($_POST['cf_notes_internal']) ? htmlspecialchars($_POST['cf_notes_internal']) : ''; ?></textarea>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Password *</label>
-                    <input type="password" name="password" required autocomplete="new-password" minlength="6" placeholder="Minimum 6 characters">
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Confirm Password *</label>
-                    <input type="password" name="confirm_password" required autocomplete="new-password" minlength="6" placeholder="Confirm your password">
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-block">
-                    <i class="fas fa-user-plus"></i> Sign Up
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 30px; padding: 12px; font-size:16px;">
+                    <i class="fas fa-user-plus"></i> Complete Onboarding &amp; Register
                 </button>
             </form>
 
