@@ -260,6 +260,28 @@ if (isset($_GET['action'])) {
         .color-picker-group { display: flex; align-items: center; gap: 10px; }
         .color-picker-group input[type="color"] { width: 44px; height: 38px; padding: 2px; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; background: none; }
         .color-hex-display { flex: 1; font-family: monospace; letter-spacing: 1px; }
+
+        /* Extension Integration Modal Tab Styling */
+        .tab-btn.active-tab {
+            color: #0074D9 !important;
+            border-bottom: 3px solid #0074D9 !important;
+        }
+        .dark-mode .tab-btn.active-tab {
+            color: #38bdf8 !important;
+            border-bottom: 3px solid #38bdf8 !important;
+        }
+        .int-tab-content code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #0f172a;
+        }
+        .dark-mode .int-tab-content code {
+            background: #334155;
+            color: #f8fafc;
+        }
     </style>
 </head>
 <body>
@@ -401,6 +423,67 @@ if (isset($_GET['action'])) {
         </div>
     </div>
 
+    <!-- Extension Integration Modal -->
+    <div class="modal-overlay" id="integrationModal" style="display:none; z-index: 1100;">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 800px; width: 90%;">
+            <div class="modal-header">
+                <h3><i class="fas fa-code"></i> Extension Integration Guide</h3>
+                <button class="close-btn" onclick="closeIntegrationModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 10px;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                    Integrate this product (<strong id="intProductName" style="color:#0074D9;"></strong>) with your Chrome Extension by adding the following files into your extension project directory.
+                </p>
+                
+                <!-- Tab Headers -->
+                <div class="tab-headers" style="display:flex; border-bottom: 2px solid var(--border-color); margin-bottom:15px; gap: 10px;">
+                    <button class="tab-btn active-tab" onclick="switchIntTab('instructions')" id="tab-instructions" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">1. Instructions</button>
+                    <button class="tab-btn" onclick="switchIntTab('html')" id="tab-html" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">2. popup.html</button>
+                    <button class="tab-btn" onclick="switchIntTab('js')" id="tab-js" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">3. popup.js</button>
+                </div>
+
+                <!-- Tab 1: Instructions -->
+                <div id="int-tab-instructions" class="int-tab-content">
+                    <h4 style="margin-top:0;">Integration Steps:</h4>
+                    <ol style="font-size:14px; line-height:1.6; padding-left:20px; color:#555;">
+                        <li>Create a file named <code>popup.html</code> in your Chrome Extension source directory.</li>
+                        <li>Copy the HTML code from the <strong>popup.html</strong> tab and paste it into the file.</li>
+                        <li>Create another file named <code>popup.js</code> in the same directory.</li>
+                        <li>Copy the JavaScript code from the <strong>popup.js</strong> tab and paste it.</li>
+                        <li>Make sure your extension's <code>manifest.json</code> specifies <code>popup.html</code> as your default popup:
+                            <pre style="background:#f4f6f8; padding:10px; border-radius:6px; font-size:12px; margin-top:5px; color:#333;">"action": {
+  "default_popup": "popup.html"
+}</pre>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Tab 2: popup.html -->
+                <div id="int-tab-html" class="int-tab-content" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:12px; color:#666;">Copy into <code>popup.html</code></span>
+                        <button class="btn btn-secondary btn-sm" onclick="copySnippet('codeHtml')" style="padding: 4px 10px; font-size:12px;"><i class="fas fa-copy"></i> Copy Code</button>
+                    </div>
+                    <textarea id="codeHtml" readonly style="width:100%; height:250px; font-family:monospace; font-size:12px; background:#0f172a; color:#f8fafc; border-radius:6px; padding:12px; border:none; resize:none;"></textarea>
+                </div>
+
+                <!-- Tab 3: popup.js -->
+                <div id="int-tab-js" class="int-tab-content" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:12px; color:#666;">Copy into <code>popup.js</code></span>
+                        <button class="btn btn-secondary btn-sm" onclick="copySnippet('codeJs')" style="padding: 4px 10px; font-size:12px;"><i class="fas fa-copy"></i> Copy Code</button>
+                    </div>
+                    <textarea id="codeJs" readonly style="width:100%; height:250px; font-family:monospace; font-size:12px; background:#0f172a; color:#f8fafc; border-radius:6px; padding:12px; border:none; resize:none;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 15px 20px; border-top: 1px solid var(--border-color); text-align:right;">
+                <button class="btn btn-secondary" onclick="closeIntegrationModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
@@ -521,7 +604,8 @@ if (isset($_GET['action'])) {
                             title: 'Actions',
                             orderable: false,
                             render: function(data, type, row) {
-                                return '<button class="action-icon edit-icon" onclick=\'editProduct(' + JSON.stringify(row).replace(/'/g, "\\'") + ')\'><i class="fas fa-edit"></i></button>' +
+                                return '<button class="action-icon code-icon" onclick="showIntegrationCode(' + row.product_id + ')" title="Get Extension Integration Code" style="color:#0074D9;margin-right:4px;border:none;background:none;cursor:pointer;"><i class="fas fa-code"></i></button>' +
+                                       '<button class="action-icon edit-icon" onclick=\'editProduct(' + JSON.stringify(row).replace(/'/g, "\\'") + ')\'><i class="fas fa-edit"></i></button>' +
                                        '<button class="action-icon delete-icon" onclick="deleteProduct(' + row.product_id + ')"><i class="fas fa-trash"></i></button>';
                             }
                         }
@@ -797,6 +881,209 @@ if (isset($_GET['action'])) {
                         }
                     });
                 }
+            });
+        }
+
+        // ============================================================
+        // Chrome Extension Integration Modal Code
+        // ============================================================
+        function showIntegrationCode(productId) {
+            const product = productsData.find(p => p.product_id === productId);
+            const productName = product ? product.product_name : "Extension";
+            document.getElementById('intProductName').innerText = productName;
+            
+            // Set values inside textarea snippets
+            const apiUrl = "<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/api.php'; ?>";
+            
+            // popup.html template
+            const htmlCode = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { width: 300px; font-family: Arial, sans-serif; padding: 15px; margin: 0; background: #fafafa; }
+        .card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        h3 { margin-top: 0; color: #0074D9; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #555; }
+        input { width: 90%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; }
+        button { width: 98%; padding: 10px; background: #0074D9; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        button:hover { background: #0056b3; }
+        .error { color: red; font-size: 12px; margin-top: 8px; font-weight: bold; }
+        .success { color: green; font-size: 12px; margin-top: 8px; font-weight: bold; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- 1. Activation Screen (If license not verified) -->
+        <div id="activationScreen">
+            <h3>Activate Extension</h3>
+            <div class="form-group">
+                <label>Enter License Key</label>
+                <input type="text" id="licenseKeyInput" placeholder="SMS-XXXX-XXXX-XXXX-XXXX">
+            </div>
+            <button id="activateBtn">Activate Now</button>
+            <div id="errorMessage" class="error hidden"></div>
+        </div>
+
+        <!-- 2. Main Tool Screen (Unlocked state) -->
+        <div id="toolScreen" class="hidden">
+            <h3>Extension Active 🎉</h3>
+            <p style="font-size:13px; color:#444;">Your subscription is active and tool is fully unlocked.</p>
+            <div id="licenseInfo" style="font-size:12px; background:#f0f7ff; padding:8px; border-radius:4px; border:1px solid #bcd; color:#333;"></div>
+            <br>
+            <!-- Your extension dashboard features go here -->
+            <button id="deactivateBtn" style="background:#dc3545;">Reset License</button>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>`;
+
+            // popup.js template (with Product ID & API URL dynamically configured!)
+            const jsCode = `// CONFIGURATION: Connected directly to this system
+const CONFIG = {
+    PRODUCT_ID: ${productId}, // Connected product: ${productName}
+    API_URL: "${apiUrl}"
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    checkLicense();
+
+    document.getElementById('activateBtn').addEventListener('click', function() {
+        const key = document.getElementById('licenseKeyInput').value.trim();
+        if (!key) {
+            showError("Please enter a license key.");
+            return;
+        }
+        activateLicense(key);
+    });
+
+    document.getElementById('deactivateBtn').addEventListener('click', function() {
+        chrome.storage.local.clear(function() {
+            showActivationScreen();
+        });
+    });
+});
+
+function checkLicense() {
+    chrome.storage.local.get(['license_key', 'license_active', 'expiry_date'], function(data) {
+        if (data.license_active && data.license_key) {
+            verifyWithServer(data.license_key, function(isValid, response) {
+                if (isValid) {
+                    showToolScreen(response.expiry_date, response.customer_name);
+                } else {
+                    showActivationScreen("License is expired or deactivated.");
+                }
+            });
+        } else {
+            showActivationScreen();
+        }
+    });
+}
+
+function verifyWithServer(key, callback) {
+    const url = \`\${CONFIG.API_URL}?action=verify&license_key=\${encodeURIComponent(key)}&product_id=\${CONFIG.PRODUCT_ID}\`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                callback(true, data);
+            } else {
+                callback(false, null);
+            }
+        })
+        .catch(err => {
+            console.error("API Connection Error:", err);
+            // Optional: fallback to local memory in case network is down
+            callback(true, { expiry_date: "Offline Backup" });
+        });
+}
+
+function activateLicense(key) {
+    showError("");
+    verifyWithServer(key, function(isValid, response) {
+        if (isValid) {
+            chrome.storage.local.set({
+                license_key: key,
+                license_active: true,
+                expiry_date: response.expiry_date
+            }, function() {
+                showToolScreen(response.expiry_date, response.customer_name);
+            });
+        } else {
+            showError("Invalid, expired, or wrong product License Key.");
+        }
+    });
+}
+
+function showActivationScreen(errMsg = "") {
+    document.getElementById('activationScreen').classList.remove('hidden');
+    document.getElementById('toolScreen').classList.add('hidden');
+    if (errMsg) showError(errMsg);
+}
+
+function showToolScreen(expiry, customerName) {
+    document.getElementById('activationScreen').classList.add('hidden');
+    document.getElementById('toolScreen').classList.remove('hidden');
+    document.getElementById('licenseInfo').innerHTML = \`
+        <strong>User:</strong> \${customerName || 'Subscriber'}<br>
+        <strong>Expiry:</strong> \${expiry}
+    \`;
+}
+
+function showError(msg) {
+    const el = document.getElementById('errorMessage');
+    if (msg) {
+        el.textContent = msg;
+        el.classList.remove('hidden');
+    } else {
+        el.classList.add('hidden');
+    }
+}`;
+
+            document.getElementById('codeHtml').value = htmlCode;
+            document.getElementById('codeJs').value = jsCode;
+
+            // Open Modal
+            switchIntTab('instructions');
+            document.getElementById('integrationModal').style.display = 'flex';
+        }
+
+        function closeIntegrationModal() {
+            document.getElementById('integrationModal').style.display = 'none';
+        }
+
+        function switchIntTab(tabName) {
+            // Hide all contents
+            document.querySelectorAll('.int-tab-content').forEach(function(el) {
+                el.style.display = 'none';
+            });
+            // Show current content
+            document.getElementById('int-tab-' + tabName).style.display = 'block';
+
+            // Deactivate all tab headers
+            document.querySelectorAll('.tab-btn').forEach(function(btn) {
+                btn.classList.remove('active-tab');
+            });
+            // Activate current tab header
+            document.getElementById('tab-' + tabName).classList.add('active-tab');
+        }
+
+        function copySnippet(elementId) {
+            const copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // mobile support
+            navigator.clipboard.writeText(copyText.value);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Code Copied!',
+                text: 'Snippet copied to clipboard successfully.',
+                timer: 1500,
+                showConfirmButton: false
             });
         }
     </script>
