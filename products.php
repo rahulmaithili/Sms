@@ -976,9 +976,9 @@ const LICENSE_CONFIG = {
         </div>
     </div>
     <!-- Include central configuration file -->
-    <script src="config.js"></script>
+    <script src="config.js"><\/script>
     <!-- Include licensing helper file -->
-    <script src="popup.js"></script>
+    <script src="popup.js"><\/script>
 </body>
 </html>`;
 
