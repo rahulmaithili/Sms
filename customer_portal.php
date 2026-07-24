@@ -34,6 +34,22 @@ if (!$customer_id) {
     }
 }
 
+// Fetch customer contact details for Razorpay prefilling
+$customer_email = '';
+$customer_phone = '';
+if ($customer_id) {
+    $conn = getDBConnection();
+    $stmt = $conn->prepare("SELECT email, phone FROM customers WHERE customer_id = ?");
+    $stmt->bind_param("i", $customer_id);
+    $stmt->execute();
+    $cust_res = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    if ($cust_res) {
+        $customer_email = $cust_res['email'] ?? '';
+        $customer_phone = $cust_res['phone'] ?? '';
+    }
+}
+
 // AJAX handlers
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
@@ -891,7 +907,8 @@ if (isset($_GET['action'])) {
                         theme:       { color: '#0074D9' },
                         prefill:     {
                             name:  '<?php echo addslashes(htmlspecialchars($full_name)); ?>',
-                            email: ''
+                            email: '<?php echo addslashes(htmlspecialchars($customer_email)); ?>',
+                            contact: '<?php echo addslashes(htmlspecialchars($customer_phone)); ?>'
                         },
                         handler: function(response) {
                             // Step 3: Verify payment on server

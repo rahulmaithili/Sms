@@ -17,6 +17,22 @@ $user_id = $_SESSION['user_id'];
 $full_name = isset($_SESSION['full_name']) ? $_SESSION['full_name'] : $username;
 $current_page = 'pricing';
 
+// Fetch customer contact details for Razorpay prefilling
+$customer_email = '';
+$customer_phone = '';
+if ($_SESSION['role'] === 'customer' && isset($_SESSION['customer_id'])) {
+    $conn = getDBConnection();
+    $stmt = $conn->prepare("SELECT email, phone FROM customers WHERE customer_id = ?");
+    $stmt->bind_param("i", $_SESSION['customer_id']);
+    $stmt->execute();
+    $cust_res = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    if ($cust_res) {
+        $customer_email = $cust_res['email'] ?? '';
+        $customer_phone = $cust_res['phone'] ?? '';
+    }
+}
+
 // get products
 // get products
 if (isset($_GET['action']) && $_GET['action'] === 'getProducts') {
@@ -328,7 +344,8 @@ $branding = getSiteBranding();
                     theme:       { color: '#0074D9' },
                     prefill:     {
                         name:  '<?php echo addslashes(htmlspecialchars($full_name)); ?>',
-                        email: '<?php echo addslashes(htmlspecialchars($_SESSION['username'])); ?>@example.com' // Fallback helper
+                        email: '<?php echo addslashes(htmlspecialchars($customer_email)); ?>',
+                        contact: '<?php echo addslashes(htmlspecialchars($customer_phone)); ?>'
                     },
                     handler: function(response) {
                         verifyRazorpayPayment(response, sl, r.amount);
