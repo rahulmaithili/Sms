@@ -111,6 +111,7 @@ $currency = getCurrency();
             gap: 12px;
             text-decoration: none;
             color: var(--text-main);
+            flex-shrink: 0;
         }
 
         .logo-img {
@@ -118,6 +119,7 @@ $currency = getCurrency();
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .logo-text {
@@ -127,6 +129,7 @@ $currency = getCurrency();
             background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            flex-shrink: 0;
         }
 
         .nav-links {
@@ -134,6 +137,7 @@ $currency = getCurrency();
             align-items: center;
             gap: 30px;
             list-style: none;
+            flex-shrink: 0;
         }
 
         .nav-links a {
@@ -152,6 +156,7 @@ $currency = getCurrency();
             display: flex;
             gap: 12px;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .btn {
@@ -447,7 +452,7 @@ $currency = getCurrency();
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .navbar {
                 height: 70px;
             }
