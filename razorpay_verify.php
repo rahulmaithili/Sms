@@ -141,7 +141,7 @@ if ($sum_total >= $sub_total) {
 $license_key = $sub['product_key'];
 $auto_delivered = false;
 
-if ($new_status === 'Paid' && empty($license_key)) {
+if ($new_status === 'Paid' && (empty($license_key) || $license_key === 'SMS-PENDING')) {
     // Generate secure license key (e.g. SMS-XXXX-XXXX-XXXX-XXXX)
     $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     $key = "";
