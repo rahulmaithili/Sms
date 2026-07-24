@@ -18,9 +18,10 @@ if (!isset($username) || !isset($role) || !isset($current_page) || !isset($user_
     die('Sidebar requires $username, $role, $current_page, and $user_id variables');
 }
 
-// Get user's profile image, fallback to default logo
+// Get user's profile image, fallback to site logo
 $profile_image = getProfileImage($user_id);
-$default_logo = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGXxCe0WNNedmFqSWeF761f7Kshhc-NP5ChRQKz9fr97cO8VaarvD0KlCwqHojJVBWv-RAxfOqMI5rD4H78KnARyOc6QgwL1nRRFWf5xNQ1d9F9HfAoLPPGlTyP0GwNl4n-INMEsWLQ4Y7zJtz5bOdAnc2ePH9-uCRgshlo6BsS6gJEz6fhrxL-5U5O3sX/s160/channels4_profile.jpg";
+$branding = getSiteBranding();
+$default_logo = $branding['site_logo'];
 $image_src = $profile_image ? $profile_image : $default_logo;
 
 // Check if any submenu item is active
