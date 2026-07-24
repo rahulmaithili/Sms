@@ -257,6 +257,17 @@ if ($r && $r->num_rows === 0) {
     $logs[] = ['skip', 'products.download_url already exists'];
 }
 
+// 17. Add product_code column to products
+$r = $conn->query("SHOW COLUMNS FROM products LIKE 'product_code'");
+if ($r && $r->num_rows === 0) {
+    runSafe($conn, "ALTER TABLE products ADD COLUMN product_code VARCHAR(100) DEFAULT NULL AFTER product_id", "Added product_code to products table", $logs);
+    // Populate defaults
+    $conn->query("UPDATE products SET product_code = LOWER(TRIM(REPLACE(product_name, ' ', '-')))");
+    runSafe($conn, "ALTER TABLE products ADD UNIQUE KEY unique_product_code (product_code)", "Added unique key for product_code", $logs);
+} else {
+    $logs[] = ['skip', 'products.product_code already exists'];
+}
+
 logActivity($_SESSION['user_id'], $_SESSION['username'], 'DB Update', 'Ran update_setup.php');
 ?>
 <!DOCTYPE html>

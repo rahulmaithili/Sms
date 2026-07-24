@@ -23,7 +23,9 @@ if ($action !== 'verify') {
     exit();
 }
 
-$license_key = trim($_GET['license_key'] ?? $_POST['license_key'] ?? '');
+$license_key  = trim($_GET['license_key'] ?? $_POST['license_key'] ?? '');
+$product_code = trim($_GET['product_code'] ?? $_POST['product_code'] ?? '');
+$product_id   = intval($_GET['product_id'] ?? $_POST['product_id'] ?? 0);
 
 if (empty($license_key)) {
     echo json_encode([
@@ -37,14 +39,28 @@ try {
     $conn = getDBConnection();
     
     // Query to find the subscription with this product key
-    $stmt = $conn->prepare(
-        "SELECT s.sl, s.customer_name, s.invoice_no, s.expiry_date, s.payment_status, s.subscription_status,
-                p.product_name
-         FROM subscriptions s
-         LEFT JOIN products p ON s.product_id = p.product_id
-         WHERE s.product_key = ?"
-    );
-    $stmt->bind_param("s", $license_key);
+    $query = "SELECT s.sl, s.customer_name, s.invoice_no, s.expiry_date, s.payment_status, s.subscription_status,
+                     p.product_name, p.product_code, p.product_id
+              FROM subscriptions s
+              LEFT JOIN products p ON s.product_id = p.product_id
+              WHERE s.product_key = ?";
+              
+    if (!empty($product_code)) {
+        $query .= " AND p.product_code = ?";
+    } elseif ($product_id > 0) {
+        $query .= " AND p.product_id = ?";
+    }
+    
+    $stmt = $conn->prepare($query);
+    
+    if (!empty($product_code)) {
+        $stmt->bind_param("ss", $license_key, $product_code);
+    } elseif ($product_id > 0) {
+        $stmt->bind_param("si", $license_key, $product_id);
+    } else {
+        $stmt->bind_param("s", $license_key);
+    }
+    
     $stmt->execute();
     $sub = $stmt->get_result()->fetch_assoc();
     $stmt->close();

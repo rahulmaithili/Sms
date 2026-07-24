@@ -33,7 +33,7 @@ if (isset($_GET['action'])) {
 
             case 'getProducts':
                 $conn = getDBConnection();
-                $stmt = $conn->prepare("SELECT product_id, product_name, description, color_code, selling_price, purchase_price, download_url, is_active, display_order, created_at FROM products ORDER BY display_order ASC, product_name ASC");
+                $stmt = $conn->prepare("SELECT product_id, product_code, product_name, description, color_code, selling_price, purchase_price, download_url, is_active, display_order, created_at FROM products ORDER BY display_order ASC, product_name ASC");
                 $stmt->execute();
                 $result = $stmt->get_result();
 
@@ -41,6 +41,7 @@ if (isset($_GET['action'])) {
                 while ($row = $result->fetch_assoc()) {
                     $products[] = [
                         'product_id'     => (int)$row['product_id'],
+                        'product_code'   => $row['product_code'] ?? '',
                         'product_name'   => $row['product_name'],
                         'description'    => $row['description'] ?? '',
                         'color_code'     => $row['color_code'] ?? '#0078D4',
@@ -65,6 +66,7 @@ if (isset($_GET['action'])) {
                 }
 
                 $product_name   = isset($_POST['product_name'])  ? trim($_POST['product_name'])  : '';
+                $product_code   = isset($_POST['product_code'])  ? trim($_POST['product_code'])  : '';
                 $description    = isset($_POST['description'])     ? trim($_POST['description'])    : '';
                 $color_code     = isset($_POST['color_code'])      ? trim($_POST['color_code'])     : '#0078D4';
                 $display_order  = isset($_POST['display_order'])   ? intval($_POST['display_order']) : 0;
@@ -77,6 +79,11 @@ if (isset($_GET['action'])) {
                     exit();
                 }
 
+                // Auto-generate code slug if empty
+                if (empty($product_code)) {
+                    $product_code = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $product_name), '-'));
+                }
+
                 if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $color_code)) {
                     $color_code = '#0078D4';
                 }
@@ -85,8 +92,8 @@ if (isset($_GET['action'])) {
                 $downloadVal = !empty($download_url) ? $download_url : null;
 
                 $conn = getDBConnection();
-                $stmt = $conn->prepare("INSERT INTO products (product_name, description, color_code, display_order, selling_price, purchase_price, download_url, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
-                $stmt->bind_param("sssidds", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal);
+                $stmt = $conn->prepare("INSERT INTO products (product_code, product_name, description, color_code, display_order, selling_price, purchase_price, download_url, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)");
+                $stmt->bind_param("sssssidds", $product_code, $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal);
 
                 if ($stmt->execute()) {
                     logActivity($user_id, $username, 'Product Created', "Created product: $product_name");
@@ -96,7 +103,7 @@ if (isset($_GET['action'])) {
                     $errno = $conn->errno;
                     $stmt->close();
                     if ($errno === 1062) {
-                        echo json_encode(['success' => false, 'message' => 'Product name already exists']);
+                        echo json_encode(['success' => false, 'message' => 'Product name or code already exists']);
                     } else {
                         echo json_encode(['success' => false, 'message' => 'Failed to add product: ' . $conn->error]);
                     }
@@ -111,6 +118,7 @@ if (isset($_GET['action'])) {
 
                 $product_id     = isset($_POST['product_id'])     ? intval($_POST['product_id'])    : 0;
                 $product_name   = isset($_POST['product_name'])   ? trim($_POST['product_name'])    : '';
+                $product_code   = isset($_POST['product_code'])   ? trim($_POST['product_code'])    : '';
                 $description    = isset($_POST['description'])      ? trim($_POST['description'])    : '';
                 $color_code     = isset($_POST['color_code'])       ? trim($_POST['color_code'])     : '#0078D4';
                 $display_order  = isset($_POST['display_order'])    ? intval($_POST['display_order']) : 0;
@@ -124,6 +132,11 @@ if (isset($_GET['action'])) {
                     exit();
                 }
 
+                // Auto-generate code slug if empty
+                if (empty($product_code)) {
+                    $product_code = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $product_name), '-'));
+                }
+
                 if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $color_code)) {
                     $color_code = '#0078D4';
                 }
@@ -132,8 +145,8 @@ if (isset($_GET['action'])) {
                 $downloadVal = !empty($download_url) ? $download_url : null;
 
                 $conn = getDBConnection();
-                $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, color_code = ?, display_order = ?, selling_price = ?, purchase_price = ?, download_url = ?, is_active = ? WHERE product_id = ?");
-                $stmt->bind_param("sssiddsii", $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal, $is_active, $product_id);
+                $stmt = $conn->prepare("UPDATE products SET product_code = ?, product_name = ?, description = ?, color_code = ?, display_order = ?, selling_price = ?, purchase_price = ?, download_url = ?, is_active = ? WHERE product_id = ?");
+                $stmt->bind_param("sssssiddis", $product_code, $product_name, $descVal, $color_code, $display_order, $selling_price, $purchase_price, $downloadVal, $is_active, $product_id);
 
                 if ($stmt->execute()) {
                     logActivity($user_id, $username, 'Product Updated', "Updated product: $product_name");
@@ -143,9 +156,9 @@ if (isset($_GET['action'])) {
                     $errno = $conn->errno;
                     $stmt->close();
                     if ($errno === 1062) {
-                        echo json_encode(['success' => false, 'message' => 'Product name already exists']);
+                        echo json_encode(['success' => false, 'message' => 'Product name or code already exists']);
                     } else {
-                        echo json_encode(['success' => false, 'message' => 'Failed to update product']);
+                        echo json_encode(['success' => false, 'message' => 'Failed to update product: ' . $conn->error]);
                     }
                 }
                 exit();
@@ -369,6 +382,12 @@ if (isset($_GET['action'])) {
                         </div>
 
                         <div class="form-group">
+                            <label><i class="fas fa-barcode"></i> Product Code (slug) *</label>
+                            <input type="text" id="formProductCode" name="product_code" placeholder="e.g. cdcms-allocation-helper" required>
+                            <div class="help-text">Unique text identifier for extensions.</div>
+                        </div>
+
+                        <div class="form-group span-2">
                             <label><i class="fas fa-align-left"></i> Description</label>
                             <input type="text" id="formDescription" name="description">
                         </div>
@@ -440,18 +459,18 @@ if (isset($_GET['action'])) {
                 <!-- Tab Headers -->
                 <div class="tab-headers" style="display:flex; border-bottom: 2px solid var(--border-color); margin-bottom:15px; gap: 10px;">
                     <button class="tab-btn active-tab" onclick="switchIntTab('instructions')" id="tab-instructions" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">1. Instructions</button>
-                    <button class="tab-btn" onclick="switchIntTab('html')" id="tab-html" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">2. popup.html</button>
-                    <button class="tab-btn" onclick="switchIntTab('js')" id="tab-js" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">3. popup.js</button>
+                    <button class="tab-btn" onclick="switchIntTab('config')" id="tab-config" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">2. config.js</button>
+                    <button class="tab-btn" onclick="switchIntTab('html')" id="tab-html" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">3. popup.html</button>
+                    <button class="tab-btn" onclick="switchIntTab('js')" id="tab-js" style="background:none; border:none; padding: 10px 16px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom: 3px solid transparent;">4. popup.js</button>
                 </div>
 
                 <!-- Tab 1: Instructions -->
                 <div id="int-tab-instructions" class="int-tab-content">
                     <h4 style="margin-top:0;">Integration Steps:</h4>
                     <ol style="font-size:14px; line-height:1.6; padding-left:20px; color:#555;">
-                        <li>Create a file named <code>popup.html</code> in your Chrome Extension source directory.</li>
-                        <li>Copy the HTML code from the <strong>popup.html</strong> tab and paste it into the file.</li>
-                        <li>Create another file named <code>popup.js</code> in the same directory.</li>
-                        <li>Copy the JavaScript code from the <strong>popup.js</strong> tab and paste it.</li>
+                        <li>Create a file named <code>config.js</code> in your extension directory. Copy and paste the configuration snippet from the <strong>config.js</strong> tab.</li>
+                        <li>Create a file named <code>popup.html</code> and paste the HTML snippet from the <strong>popup.html</strong> tab. (It includes config.js dynamically).</li>
+                        <li>Create a file named <code>popup.js</code> and paste the JavaScript helper from the <strong>popup.js</strong> tab.</li>
                         <li>Make sure your extension's <code>manifest.json</code> specifies <code>popup.html</code> as your default popup:
                             <pre style="background:#f4f6f8; padding:10px; border-radius:6px; font-size:12px; margin-top:5px; color:#333;">"action": {
   "default_popup": "popup.html"
@@ -460,7 +479,16 @@ if (isset($_GET['action'])) {
                     </ol>
                 </div>
 
-                <!-- Tab 2: popup.html -->
+                <!-- Tab 2: config.js -->
+                <div id="int-tab-config" class="int-tab-content" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:12px; color:#666;">Copy into <code>config.js</code></span>
+                        <button class="btn btn-secondary btn-sm" onclick="copySnippet('codeConfig')" style="padding: 4px 10px; font-size:12px;"><i class="fas fa-copy"></i> Copy Code</button>
+                    </div>
+                    <textarea id="codeConfig" readonly style="width:100%; height:250px; font-family:monospace; font-size:12px; background:#0f172a; color:#f8fafc; border-radius:6px; padding:12px; border:none; resize:none;"></textarea>
+                </div>
+
+                <!-- Tab 3: popup.html -->
                 <div id="int-tab-html" class="int-tab-content" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span style="font-size:12px; color:#666;">Copy into <code>popup.html</code></span>
@@ -469,7 +497,7 @@ if (isset($_GET['action'])) {
                     <textarea id="codeHtml" readonly style="width:100%; height:250px; font-family:monospace; font-size:12px; background:#0f172a; color:#f8fafc; border-radius:6px; padding:12px; border:none; resize:none;"></textarea>
                 </div>
 
-                <!-- Tab 3: popup.js -->
+                <!-- Tab 4: popup.js -->
                 <div id="int-tab-js" class="int-tab-content" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span style="font-size:12px; color:#666;">Copy into <code>popup.js</code></span>
@@ -700,6 +728,7 @@ if (isset($_GET['action'])) {
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-tag"></i> Add Product';
             document.getElementById('productForm').reset();
             document.getElementById('productId').value       = '';
+            document.getElementById('formProductCode').value  = '';
             document.getElementById('formColorPicker').value  = '#0078D4';
             document.getElementById('formColorCode').value    = '#0078D4';
             document.getElementById('formDisplayOrder').value = '0';
@@ -715,6 +744,7 @@ if (isset($_GET['action'])) {
             document.getElementById('modalTitle').innerHTML    = '<i class="fas fa-edit"></i> Edit Product';
             document.getElementById('productId').value        = cat.product_id;
             document.getElementById('formProductName').value  = cat.product_name;
+            document.getElementById('formProductCode').value  = cat.product_code || '';
             document.getElementById('formDescription').value   = cat.description || '';
             var color = cat.color_code || '#0078D4';
             document.getElementById('formColorPicker').value   = color;
@@ -890,11 +920,19 @@ if (isset($_GET['action'])) {
         function showIntegrationCode(productId) {
             const product = productsData.find(p => p.product_id === productId);
             const productName = product ? product.product_name : "Extension";
+            const productCode = product ? product.product_code : "";
             document.getElementById('intProductName').innerText = productName;
             
             // Set values inside textarea snippets
             const apiUrl = "<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/api.php'; ?>";
             
+            // config.js template
+            const configCode = `// Central configuration for this extension
+const LICENSE_CONFIG = {
+    API_URL: "${apiUrl}",
+    PRODUCT_CODE: "${productCode}" // Unique text identifier for ${productName}
+};`;
+
             // popup.html template
             const htmlCode = `<!DOCTYPE html>
 <html>
@@ -937,16 +975,16 @@ if (isset($_GET['action'])) {
             <button id="deactivateBtn" style="background:#dc3545;">Reset License</button>
         </div>
     </div>
+    <!-- Include central configuration file -->
+    <script src="config.js"></script>
+    <!-- Include licensing helper file -->
     <script src="popup.js"></script>
 </body>
 </html>`;
 
-            // popup.js template (with Product ID & API URL dynamically configured!)
-            const jsCode = `// CONFIGURATION: Connected directly to this system
-const CONFIG = {
-    PRODUCT_ID: ${productId}, // Connected product: ${productName}
-    API_URL: "${apiUrl}"
-};
+            // popup.js template (configured dynamically from config.js!)
+            const jsCode = `// Licensing helper for Chrome Extensions
+const CONFIG = LICENSE_CONFIG;
 
 document.addEventListener('DOMContentLoaded', function() {
     checkLicense();
@@ -984,7 +1022,7 @@ function checkLicense() {
 }
 
 function verifyWithServer(key, callback) {
-    const url = \`\${CONFIG.API_URL}?action=verify&license_key=\${encodeURIComponent(key)}&product_id=\${CONFIG.PRODUCT_ID}\`;
+    const url = \`\${CONFIG.API_URL}?action=verify&license_key=\${encodeURIComponent(key)}&product_code=\${CONFIG.PRODUCT_CODE}\`;
     
     fetch(url)
         .then(response => response.json())
@@ -1044,6 +1082,7 @@ function showError(msg) {
     }
 }`;
 
+            document.getElementById('codeConfig').value = configCode;
             document.getElementById('codeHtml').value = htmlCode;
             document.getElementById('codeJs').value = jsCode;
 

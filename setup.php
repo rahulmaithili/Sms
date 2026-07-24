@@ -168,6 +168,7 @@ session_start();
         // Products
         $products_sql = "CREATE TABLE products (
             product_id INT AUTO_INCREMENT PRIMARY KEY,
+            product_code VARCHAR(100) NOT NULL UNIQUE,
             product_name VARCHAR(100) NOT NULL UNIQUE,
             description VARCHAR(255) DEFAULT NULL,
             color_code VARCHAR(7) NOT NULL DEFAULT '#0078D4',
@@ -177,6 +178,7 @@ session_start();
             is_active TINYINT(1) NOT NULL DEFAULT 1,
             display_order INT NOT NULL DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_product_code (product_code),
             INDEX idx_product_name (product_name),
             INDEX idx_is_active (is_active),
             INDEX idx_display_order (display_order)
@@ -783,16 +785,16 @@ session_start();
         echo '<br><div class="log-item log-info"><i class="fas fa-tags"></i> <strong>Seeding Demo Products...</strong></div>';
 
         $demo_products = [
-            ['Software',  'Software subscriptions and licenses',  '#0078D4', 1, 10000.000, 8000.000],
-            ['Hardware',  'Hardware and equipment purchases',      '#107C10', 2, 50000.000, 40000.000],
-            ['Marketing', 'Marketing tools and services',          '#FF8C00', 3, 8000.000,  6000.000],
-            ['Cloud',     'Cloud infrastructure services',         '#0099BC', 4, 25000.000, 20000.000],
-            ['Support',   'Support and maintenance contracts',     '#5C2D91', 5, 15000.000, 12000.000],
+            ['Software',  'Software subscriptions and licenses',   '#0078D4', 1, 10000.000, 8000.000, 'software'],
+            ['Hardware',  'Hardware and equipment purchases',      '#008000', 2, 50000.000, 45000.000, 'hardware'],
+            ['Marketing', 'Marketing tools and services',          '#FF8C00', 3, 8000.000, 6000.000, 'marketing'],
+            ['Cloud',     'Cloud hosting and storage',             '#00A2E8', 4, 25000.000, 20000.000, 'cloud'],
+            ['Support',   'Support and maintenance contracts',     '#5C2D91', 5, 15000.000, 12000.000, 'support'],
         ];
 
-        $stmt_prod = $conn->prepare("INSERT INTO products (product_name, description, color_code, display_order, selling_price, purchase_price) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt_prod = $conn->prepare("INSERT INTO products (product_name, description, color_code, display_order, selling_price, purchase_price, product_code) VALUES (?, ?, ?, ?, ?, ?, ?)");
         foreach ($demo_products as $prod) {
-            $stmt_prod->bind_param("sssidd", $prod[0], $prod[1], $prod[2], $prod[3], $prod[4], $prod[5]);
+            $stmt_prod->bind_param("sssidds", $prod[0], $prod[1], $prod[2], $prod[3], $prod[4], $prod[5], $prod[6]);
             if ($stmt_prod->execute()) {
                 echo '<div class="log-item log-success"><i class="fas fa-check-circle"></i> Product "' . $prod[0] . '" created</div>';
             } else {
