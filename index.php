@@ -2029,10 +2029,10 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                 <div class="footer-col">
                     <h4>Legal &amp; Trust</h4>
                     <ul>
-                        <li><a href="page.php?slug=privacy-policy">Privacy Policy</a></li>
-                        <li><a href="page.php?slug=terms-of-service">Terms of Service</a></li>
-                        <li><a href="page.php?slug=refund-policy">Refund Policy</a></li>
-                        <li><a href="page.php?slug=report-issue">Report an Issue</a></li>
+                        <li><a href="privacy-policy.php">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.php">Terms of Service</a></li>
+                        <li><a href="refund-policy.php">Refund Policy</a></li>
+                        <li><a href="report-issue.php">Report an Issue</a></li>
                     </ul>
                 </div>
             </div>
