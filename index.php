@@ -28,14 +28,25 @@ if (isset($_SESSION['user_id']) && !isset($_GET['preview'])) {
     exit();
 }
 
+// Ensure portfolio table and preview_url exist
+ensurePortfolioTable();
+
 // Fetch active products to display in the catalog
 $products = [];
+$portfolio_items = [];
 try {
     $conn = getDBConnection();
-    $result = $conn->query("SELECT product_id, product_code, product_name, description, color_code, selling_price FROM products WHERE is_active = 1 ORDER BY display_order ASC, product_name ASC");
+    $result = $conn->query("SELECT product_id, product_code, product_name, description, color_code, selling_price, preview_url FROM products WHERE is_active = 1 ORDER BY display_order ASC, product_name ASC");
     if ($result) {
         while ($row = $result->fetch_assoc()) {
             $products[] = $row;
+        }
+    }
+
+    $p_res = $conn->query("SELECT * FROM portfolio_items WHERE is_active = 1 ORDER BY display_order ASC, portfolio_id DESC");
+    if ($p_res) {
+        while ($p_row = $p_res->fetch_assoc()) {
+            $portfolio_items[] = $p_row;
         }
     }
 } catch (Exception $e) {
@@ -1308,80 +1319,48 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
             </div>
 
             <div class="portfolio-grid">
-                <!-- Project 1 -->
-                <div class="portfolio-card">
-                    <div class="portfolio-img-wrap">
-                        <i class="fas fa-columns"></i>
-                        <span class="portfolio-episode-tag">E14</span>
+                <?php if (empty($portfolio_items)): ?>
+                    <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 50px 0;">
+                        <i class="fas fa-folder-open" style="font-size:48px; margin-bottom:15px; display:block;"></i>
+                        <p>No portfolio projects listed. Admin can add projects in Portfolio Manager!</p>
                     </div>
-                    <div class="portfolio-info">
-                        <div>
-                            <h3>Build a Complete Dynamic CRUD Web Dashboard using Google Sheets + Apps Script + React | E14</h3>
-                            <div class="portfolio-plans">
-                                <span><i class="fas fa-check"></i> Premium Plan</span>
-                                <span><i class="fas fa-check"></i> VIP Premium Plan</span>
+                <?php else: ?>
+                    <?php foreach ($portfolio_items as $item): 
+                        $item_plans = array_map('trim', explode(',', $item['plans_included'] ?? 'Premium Plan'));
+                        $item_tags  = array_map('trim', explode(',', $item['tags'] ?? 'Google Apps Script'));
+                        $p_url = $item['preview_url'] ?? '';
+                    ?>
+                        <div class="portfolio-card">
+                            <div class="portfolio-img-wrap">
+                                <i class="fas fa-laptop-code"></i>
+                                <span class="portfolio-episode-tag"><?php echo htmlspecialchars($item['episode_tag']); ?></span>
                             </div>
-                            <div class="portfolio-tags">
-                                <span class="portfolio-tag">Google Apps Script</span>
-                                <span class="portfolio-tag">Dashboard</span>
-                            </div>
-                        </div>
-                        <div class="portfolio-btns">
-                            <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
-                            <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="portfolio-card">
-                    <div class="portfolio-img-wrap">
-                        <i class="fas fa-users-cog"></i>
-                        <span class="portfolio-episode-tag">E10</span>
-                    </div>
-                    <div class="portfolio-info">
-                        <div>
-                            <h3>How to Build Complete HR System with Google Apps Script - Attendance, Payroll &amp; Dashboard | E10</h3>
-                            <div class="portfolio-plans">
-                                <span><i class="fas fa-check"></i> Premium Plan</span>
-                                <span><i class="fas fa-check"></i> VIP Premium Plan</span>
-                            </div>
-                            <div class="portfolio-tags">
-                                <span class="portfolio-tag">Google Apps Script</span>
-                                <span class="portfolio-tag">Attendance</span>
+                            <div class="portfolio-info">
+                                <div>
+                                    <h3><?php echo htmlspecialchars($item['title']); ?></h3>
+                                    <div class="portfolio-plans">
+                                        <?php foreach ($item_plans as $plan_name): ?>
+                                            <span><i class="fas fa-check"></i> <?php echo htmlspecialchars($plan_name); ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="portfolio-tags">
+                                        <?php foreach ($item_tags as $tag_name): ?>
+                                            <span class="portfolio-tag"><?php echo htmlspecialchars($tag_name); ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <div class="portfolio-btns">
+                                    <?php if (!empty($p_url)): ?>
+                                        <a href="javascript:void(0);" onclick="openPreviewModal('<?php echo htmlspecialchars(addslashes($item['title'])); ?>', '<?php echo htmlspecialchars(addslashes($p_url)); ?>')" class="btn btn-outline btn-sm"><i class="fab fa-youtube" style="color:#ef4444;"></i> Watch Preview</a>
+                                    <?php else: ?>
+                                        <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>?text=<?php echo urlencode('Hi, I want a preview for ' . $item['title']); ?>" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-play"></i> Watch Preview</a>
+                                    <?php endif; ?>
+                                    <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>?text=<?php echo urlencode('Hi Mr.Rahul, I am interested in: ' . $item['title']); ?>" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="portfolio-btns">
-                            <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
-                            <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="portfolio-card">
-                    <div class="portfolio-img-wrap">
-                        <i class="fas fa-brain"></i>
-                        <span class="portfolio-episode-tag">F9</span>
-                    </div>
-                    <div class="portfolio-info">
-                        <div>
-                            <h3>Build Any App in Seconds Using Gemini API + Google Apps Script (No Code)</h3>
-                            <div class="portfolio-plans">
-                                <span><i class="fas fa-check"></i> Premium Plan</span>
-                                <span><i class="fas fa-check"></i> VIP Premium Plan</span>
-                            </div>
-                            <div class="portfolio-tags">
-                                <span class="portfolio-tag">Dashboard</span>
-                                <span class="portfolio-tag">Google Apps Script</span>
-                            </div>
-                        </div>
-                        <div class="portfolio-btns">
-                            <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
-                            <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
 
             <div style="text-align:center;">
@@ -1468,7 +1447,11 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                                     </ul>
                                 </div>
                                 <div class="product-card-btns">
-                                    <a href="login.php" class="btn btn-outline">Preview</a>
+                                    <?php if (!empty($prod['preview_url'])): ?>
+                                        <a href="javascript:void(0);" onclick="openPreviewModal('<?php echo htmlspecialchars(addslashes($prod['product_name'])); ?>', '<?php echo htmlspecialchars(addslashes($prod['preview_url'])); ?>')" class="btn btn-outline"><i class="fas fa-play-circle"></i> Preview</a>
+                                    <?php else: ?>
+                                        <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>?text=<?php echo urlencode('Hi Mr.Rahul, I want a demo for: ' . $prod['product_name']); ?>" target="_blank" class="btn btn-outline"><i class="fas fa-play-circle"></i> Preview</a>
+                                    <?php endif; ?>
                                     <a href="signup.php" class="btn btn-primary" style="background:<?php echo $color; ?>; box-shadow:none;">Buy Now</a>
                                 </div>
                             </div>
@@ -1966,7 +1949,53 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
             });
         }
     });
+
+    // Preview Modal Handlers
+    function openPreviewModal(title, url) {
+        const modal = document.getElementById('videoPreviewModal');
+        const modalTitle = document.getElementById('previewModalTitle');
+        const modalIframe = document.getElementById('previewModalIframe');
+
+        if (!modal || !modalIframe) return;
+
+        modalTitle.innerHTML = '<i class="fab fa-youtube" style="color:#ef4444; margin-right:8px;"></i> ' + title;
+
+        // Convert YouTube watch URL to embed URL if needed
+        let embedUrl = url;
+        if (url.includes('youtube.com/watch?v=')) {
+            embedUrl = url.replace('watch?v=', 'embed/');
+        } else if (url.includes('youtu.be/')) {
+            embedUrl = url.replace('youtu.be/', 'youtube.com/embed/');
+        }
+
+        modalIframe.src = embedUrl;
+        modal.style.display = 'flex';
+    }
+
+    function closePreviewModal() {
+        const modal = document.getElementById('videoPreviewModal');
+        const modalIframe = document.getElementById('previewModalIframe');
+        if (modal) modal.style.display = 'none';
+        if (modalIframe) modal.src = '';
+    }
     </script>
+
+    <!-- Video / Demo Preview Modal -->
+    <div id="videoPreviewModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; justify-content:center; align-items:center; padding:20px;">
+        <div style="background:var(--bg-card, #1c0809); border:1px solid var(--border-color, #e11d48); border-radius:16px; width:100%; max-width:850px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.5); position:relative;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid var(--border-color);">
+                <h3 id="previewModalTitle" style="color:#fff; font-family:var(--title-font); font-size:16px; margin:0;"><i class="fab fa-youtube" style="color:#ef4444;"></i> Video Walkthrough Preview</h3>
+                <button onclick="closePreviewModal()" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer; line-height:1;">&times;</button>
+            </div>
+            <div style="position:relative; padding-bottom:56.25%; height:0; background:#000;">
+                <iframe id="previewModalIframe" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div style="padding:16px 24px; background:rgba(0,0,0,0.4); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <span style="font-size:13px; color:var(--text-muted);">Need a custom build or source code license?</span>
+                <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
