@@ -441,39 +441,76 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
 
         .portfolio-card:hover {
             transform: translateY(-5px);
-            border-color: var(--border-hover);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-color: var(--primary);
+            box-shadow: 0 12px 35px rgba(225,29,72,0.2);
         }
 
         .portfolio-img-wrap {
-            height: 180px;
-            background: radial-gradient(circle, var(--primary-glow) 0%, var(--bg-darker) 100%);
+            height: 190px;
+            background: #0a0202;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            border-bottom: 1px solid var(--border-color);
         }
 
-        .portfolio-img-wrap i {
-            font-size: 64px;
-            color: var(--accent);
+        .portfolio-thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .portfolio-card:hover .portfolio-thumb-img {
+            transform: scale(1.08);
+        }
+
+        .portfolio-play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.92);
+            color: #120505;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            z-index: 3;
+            cursor: pointer;
+        }
+
+        .portfolio-card:hover .portfolio-play-overlay {
+            background: #ffffff;
+            transform: translate(-50%, -50%) scale(1.08);
+            box-shadow: 0 8px 25px rgba(225,29,72,0.4);
         }
 
         .portfolio-episode-tag {
             position: absolute;
-            top: 16px;
-            right: 16px;
-            background: var(--primary);
-            color: #fff;
+            top: 12px;
+            right: 12px;
+            background: rgba(18, 5, 5, 0.85);
+            backdrop-filter: blur(4px);
+            color: #fb7185;
+            border: 1px solid rgba(225, 29, 72, 0.4);
             font-size: 11px;
             font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 4px;
+            font-family: monospace;
+            padding: 3px 10px;
+            border-radius: 6px;
+            z-index: 4;
         }
 
         .portfolio-info {
-            padding: 24px;
+            padding: 22px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -482,46 +519,54 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
 
         .portfolio-info h3 {
             font-family: var(--title-font);
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
             margin-bottom: 12px;
             line-height: 1.4;
-            min-height: 48px;
+            min-height: 44px;
         }
 
         .portfolio-plans {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
+            font-size: 11px;
+            margin-bottom: 12px;
             display: flex;
-            gap: 12px;
+            flex-wrap: wrap;
+            gap: 6px;
         }
 
         .portfolio-plans span {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 4px;
+            background: rgba(225,29,72,0.1);
+            border: 1px solid rgba(225,29,72,0.2);
+            color: #fb7185;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
         }
 
         .portfolio-plans span i {
-            color: var(--green-glow);
+            color: #fbbf24;
+            font-size: 10px;
         }
 
         .portfolio-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            margin-bottom: 24px;
+            margin-bottom: 14px;
         }
 
         .portfolio-tag {
             font-size: 10px;
             font-weight: 700;
             background: rgba(255,255,255,0.05);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
             border: 1px solid var(--border-color);
-            color: var(--accent);
+            color: var(--text-muted);
         }
 
         .portfolio-btns {
@@ -1332,18 +1377,25 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                         $item_plans = array_map('trim', explode(',', $item['plans_included'] ?? 'Premium Plan'));
                         $item_tags  = array_map('trim', explode(',', $item['tags'] ?? 'Google Apps Script'));
                         $p_url = $item['preview_url'] ?? '';
+                        $yt_id = getYouTubeId($p_url);
+                        $thumb_url = $yt_id ? "https://img.youtube.com/vi/{$yt_id}/hqdefault.jpg" : "";
                     ?>
                         <div class="portfolio-card">
-                            <div class="portfolio-img-wrap">
-                                <i class="fas fa-laptop-code"></i>
-                                <span class="portfolio-episode-tag"><?php echo htmlspecialchars($item['episode_tag']); ?></span>
+                            <div class="portfolio-img-wrap" <?php if (!empty($p_url)): ?>onclick="openPreviewModal('<?php echo htmlspecialchars(addslashes($item['title'])); ?>', '<?php echo htmlspecialchars(addslashes($p_url)); ?>')" style="cursor:pointer;"<?php endif; ?>>
+                                <?php if (!empty($thumb_url)): ?>
+                                    <img src="<?php echo htmlspecialchars($thumb_url); ?>" class="portfolio-thumb-img" alt="Thumbnail">
+                                    <div class="portfolio-play-overlay"><i class="fas fa-play" style="font-size:10px; color:#ef4444;"></i> Watch Preview</div>
+                                <?php else: ?>
+                                    <i class="fas fa-laptop-code" style="font-size:54px; color:var(--primary);"></i>
+                                <?php endif; ?>
+                                <span class="portfolio-episode-tag">&lt;/&gt; <?php echo htmlspecialchars($item['episode_tag']); ?></span>
                             </div>
                             <div class="portfolio-info">
                                 <div>
                                     <h3><?php echo htmlspecialchars($item['title']); ?></h3>
                                     <div class="portfolio-plans">
                                         <?php foreach ($item_plans as $plan_name): ?>
-                                            <span><i class="fas fa-check"></i> <?php echo htmlspecialchars($plan_name); ?></span>
+                                            <span><i class="fas fa-star"></i> <?php echo htmlspecialchars($plan_name); ?></span>
                                         <?php endforeach; ?>
                                     </div>
                                     <div class="portfolio-tags">
@@ -1351,14 +1403,17 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                                             <span class="portfolio-tag"><?php echo htmlspecialchars($tag_name); ?></span>
                                         <?php endforeach; ?>
                                     </div>
+                                    <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">
+                                        <i class="fas fa-folder" style="color:#fb7185; margin-right:4px;"></i> <?php echo htmlspecialchars($item_tags[0] ?? 'Google Apps Script'); ?>
+                                    </div>
                                 </div>
                                 <div class="portfolio-btns">
                                     <?php if (!empty($p_url)): ?>
-                                        <a href="javascript:void(0);" onclick="openPreviewModal('<?php echo htmlspecialchars(addslashes($item['title'])); ?>', '<?php echo htmlspecialchars(addslashes($p_url)); ?>')" class="btn btn-outline btn-sm"><i class="fab fa-youtube" style="color:#ef4444;"></i> Watch Preview</a>
+                                        <a href="javascript:void(0);" onclick="openPreviewModal('<?php echo htmlspecialchars(addslashes($item['title'])); ?>', '<?php echo htmlspecialchars(addslashes($p_url)); ?>')" class="btn btn-sm" style="background:#ef4444; color:#fff; font-weight:700; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:6px;"><i class="fas fa-eye"></i> Preview</a>
                                     <?php else: ?>
-                                        <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>?text=<?php echo urlencode('Hi, I want a preview for ' . $item['title']); ?>" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-play"></i> Watch Preview</a>
+                                        <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>?text=<?php echo urlencode('Hi, I want a preview for ' . $item['title']); ?>" target="_blank" class="btn btn-sm" style="background:#ef4444; color:#fff; font-weight:700; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:6px;"><i class="fas fa-eye"></i> Preview</a>
                                     <?php endif; ?>
-                                    <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>?text=<?php echo urlencode('Hi Mr.Rahul, I am interested in: ' . $item['title']); ?>" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                                    <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>?text=<?php echo urlencode('Hi Mr.Rahul, I am interested in: ' . $item['title']); ?>" target="_blank" class="btn btn-sm" style="background:#10b981; color:#fff; font-weight:700; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:6px;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                                 </div>
                             </div>
                         </div>
