@@ -87,19 +87,20 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     }
 }
 
-// Handle Product Preview URL Update
+// Handle Product Preview & Screenshot Updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product_previews'])) {
     try {
         $conn = getDBConnection();
         if (isset($_POST['product_preview_url']) && is_array($_POST['product_preview_url'])) {
-            $stmt = $conn->prepare("UPDATE products SET preview_url = ? WHERE product_id = ?");
+            $stmt = $conn->prepare("UPDATE products SET preview_url = ?, screenshot_url = ? WHERE product_id = ?");
             foreach ($_POST['product_preview_url'] as $p_id => $p_url) {
                 $p_id_int = (int)$p_id;
                 $p_url_str = trim($p_url);
-                $stmt->bind_param("si", $p_url_str, $p_id_int);
+                $p_ss_str  = isset($_POST['product_screenshot_url'][$p_id]) ? trim($_POST['product_screenshot_url'][$p_id]) : '';
+                $stmt->bind_param("ssi", $p_url_str, $p_ss_str, $p_id_int);
                 $stmt->execute();
             }
-            $message = 'Product preview links updated successfully!';
+            $message = 'Product video links and screenshot URLs saved successfully!';
         }
     } catch (Exception $e) {
         $error = 'Failed to update product previews: ' . $e->getMessage();
@@ -134,7 +135,7 @@ if (isset($_GET['edit'])) {
 $products_list = [];
 try {
     $conn = getDBConnection();
-    $res = $conn->query("SELECT product_id, product_name, product_code, preview_url, selling_price FROM products WHERE is_active = 1 ORDER BY display_order ASC");
+    $res = $conn->query("SELECT product_id, product_name, product_code, preview_url, screenshot_url, selling_price FROM products WHERE is_active = 1 ORDER BY display_order ASC");
     if ($res) {
         while ($r = $res->fetch_assoc()) {
             $products_list[] = $r;
@@ -295,12 +296,12 @@ $branding = getSiteBranding();
                         <?php endif; ?>
                     </div>
 
-                    <!-- Products Catalog Preview Links Quick Editor -->
+                    <!-- Products Catalog Preview & Screenshot Links Editor -->
                     <div class="data-section">
                         <div class="section-header">
-                            <h2><i class="fas fa-box-open"></i> Product Showcase Preview Video Links</h2>
+                            <h2><i class="fas fa-box-open"></i> Product Video Walkthrough &amp; Screenshot Links</h2>
                         </div>
-                        <p style="font-size:12px; opacity:0.75; margin-bottom:16px;">Set video preview links (e.g. YouTube demo links) for each product displayed in the Product Showcase catalog.</p>
+                        <p style="font-size:12px; opacity:0.75; margin-bottom:16px;">Add video links and screenshot URLs for each product so customers get full preview details when clicking "Preview".</p>
 
                         <form method="POST" action="portfolio_manager.php">
                             <input type="hidden" name="update_product_previews" value="1">
@@ -309,16 +310,25 @@ $branding = getSiteBranding();
                                 <p style="color:var(--text-muted); padding:10px 0;">No active products found in catalog.</p>
                             <?php else: ?>
                                 <?php foreach ($products_list as $prod): ?>
-                                    <div style="margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border-color, #eee);">
-                                        <label style="font-weight:600; font-size:13px; display:block; margin-bottom:4px;">
+                                    <div style="margin-bottom:16px; padding:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border-color, #eee); border-radius:8px;">
+                                        <label style="font-weight:700; font-size:13px; display:block; margin-bottom:8px; color:#fff;">
                                             <i class="fas fa-laptop-code" style="color:var(--navy-accent, #0074D9);"></i> <?php echo htmlspecialchars($prod['product_name']); ?> <code>(<?php echo htmlspecialchars($prod['product_code']); ?>)</code>
                                         </label>
-                                        <input type="url" name="product_preview_url[<?php echo $prod['product_id']; ?>]" class="form-control filter-input" value="<?php echo htmlspecialchars($prod['preview_url'] ?? ''); ?>" placeholder="https://www.youtube.com/watch?v=..." style="width:100%; padding:8px 12px; border-radius:6px; font-size:13px;">
+
+                                        <div style="margin-bottom:8px;">
+                                            <span style="font-size:11px; opacity:0.8; display:block; margin-bottom:2px;"><i class="fab fa-youtube" style="color:#ef4444;"></i> YouTube Video Preview URL:</span>
+                                            <input type="url" name="product_preview_url[<?php echo $prod['product_id']; ?>]" class="form-control filter-input" value="<?php echo htmlspecialchars($prod['preview_url'] ?? ''); ?>" placeholder="https://www.youtube.com/watch?v=..." style="width:100%; padding:8px 12px; border-radius:6px; font-size:12px;">
+                                        </div>
+
+                                        <div>
+                                            <span style="font-size:11px; opacity:0.8; display:block; margin-bottom:2px;"><i class="fas fa-image" style="color:#10b981;"></i> Screenshot / Demo Image URL:</span>
+                                            <input type="url" name="product_screenshot_url[<?php echo $prod['product_id']; ?>]" class="form-control filter-input" value="<?php echo htmlspecialchars($prod['screenshot_url'] ?? ''); ?>" placeholder="https://domain.com/screenshot.jpg" style="width:100%; padding:8px 12px; border-radius:6px; font-size:12px;">
+                                        </div>
                                     </div>
                                 <?php endforeach; ?>
                                 <div style="text-align:right; margin-top:16px;">
-                                    <button type="submit" class="btn btn-primary btn-sm" style="padding:8px 24px; background:#10b981; border:none; border-radius:6px; color:#fff; font-weight:700; cursor:pointer;">
-                                        <i class="fas fa-save"></i> Save Product Preview Links
+                                    <button type="submit" class="btn btn-primary btn-sm" style="padding:10px 28px; background:#10b981; border:none; border-radius:6px; color:#fff; font-weight:700; cursor:pointer;">
+                                        <i class="fas fa-save"></i> Save Product Video &amp; Screenshot Links
                                     </button>
                                 </div>
                             <?php endif; ?>

@@ -36,7 +36,7 @@ $products = [];
 $portfolio_items = [];
 try {
     $conn = getDBConnection();
-    $result = $conn->query("SELECT product_id, product_code, product_name, description, color_code, selling_price, preview_url FROM products WHERE is_active = 1 ORDER BY display_order ASC, product_name ASC");
+    $result = $conn->query("SELECT product_id, product_code, product_name, description, color_code, selling_price, preview_url, screenshot_url FROM products WHERE is_active = 1 ORDER BY display_order ASC, product_name ASC");
     if ($result) {
         while ($row = $result->fetch_assoc()) {
             $products[] = $row;
@@ -1511,6 +1511,7 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                                         "price" => htmlspecialchars($currency) . " " . number_format((float)$prod["selling_price"], 2),
                                         "description" => $prod["description"] ?? "Premium browser automation utility script configured with secure licensing.",
                                         "preview_url" => $prod["preview_url"] ?? "",
+                                        "screenshot_url" => $prod["screenshot_url"] ?? "",
                                         "color" => $color
                                     ], JSON_HEX_APOS | JSON_HEX_QUOT); ?>)' class="btn btn-outline"><i class="fas fa-play-circle"></i> Preview</a>
                                     <a href="signup.php" class="btn btn-primary" style="background:<?php echo $color; ?>; box-shadow:none;">Buy Now</a>
@@ -2049,6 +2050,8 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
         const descElem     = document.getElementById('pmProductDesc');
         const videoWrap    = document.getElementById('pmVideoWrap');
         const iframe       = document.getElementById('pmIframe');
+        const ssWrap       = document.getElementById('pmScreenshotWrap');
+        const ssImg        = document.getElementById('pmScreenshotImg');
         const bannerWrap   = document.getElementById('pmBannerGraphic');
         const waBtn        = document.getElementById('pmWaBtn');
         const buyBtn       = document.getElementById('pmBuyBtn');
@@ -2064,6 +2067,9 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
         const msgText     = encodeURIComponent('Hi Mr.Rahul, I am interested in: ' + prod.name + ' (' + prod.code + ')');
         waBtn.href        = 'https://wa.me/' + whatsappNum + '?text=' + msgText;
 
+        let hasContent = false;
+
+        // Video Walkthrough
         if (prod.preview_url && prod.preview_url.trim() !== '') {
             let embedUrl = prod.preview_url;
             if (embedUrl.includes('youtube.com/watch?v=')) {
@@ -2073,11 +2079,27 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
             }
             iframe.src = embedUrl;
             videoWrap.style.display = 'block';
-            bannerWrap.style.display = 'none';
+            hasContent = true;
         } else {
             iframe.src = '';
             videoWrap.style.display = 'none';
+        }
+
+        // Screenshot Image
+        if (prod.screenshot_url && prod.screenshot_url.trim() !== '') {
+            ssImg.src = prod.screenshot_url;
+            ssWrap.style.display = 'block';
+            hasContent = true;
+        } else {
+            ssImg.src = '';
+            ssWrap.style.display = 'none';
+        }
+
+        // Fallback banner if no video and no screenshot
+        if (!hasContent) {
             bannerWrap.style.display = 'block';
+        } else {
+            bannerWrap.style.display = 'none';
         }
 
         modal.style.display = 'flex';
@@ -2086,8 +2108,10 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
     function closeProductPreviewModal() {
         const modal  = document.getElementById('productPreviewModal');
         const iframe = document.getElementById('pmIframe');
+        const ssImg  = document.getElementById('pmScreenshotImg');
         if (modal) modal.style.display = 'none';
         if (iframe) iframe.src = '';
+        if (ssImg) ssImg.src = '';
     }
     </script>
 
@@ -2110,7 +2134,7 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
 
     <!-- Product Interactive Preview Modal -->
     <div id="productPreviewModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(12px); z-index:999999; justify-content:center; align-items:center; padding:20px; overflow-y:auto;">
-        <div style="background:var(--bg-card, #1c0809); border:1px solid var(--border-color, #e11d48); border-radius:18px; width:100%; max-width:750px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; margin:auto;">
+        <div style="background:var(--bg-card, #1c0809); border:1px solid var(--border-color, #e11d48); border-radius:18px; width:100%; max-width:780px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; margin:auto;">
             
             <!-- Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 26px; border-bottom:1px solid var(--border-color); background:rgba(0,0,0,0.2);">
@@ -2121,11 +2145,17 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                 <button onclick="closeProductPreviewModal()" style="background:none; border:none; color:#fff; font-size:28px; cursor:pointer; opacity:0.8;">&times;</button>
             </div>
 
-            <!-- Video / Preview Banner -->
+            <!-- Video Walkthrough Player -->
             <div id="pmVideoWrap" style="display:none; position:relative; padding-bottom:56.25%; height:0; background:#000;">
                 <iframe id="pmIframe" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen></iframe>
             </div>
 
+            <!-- Screenshot Image Container -->
+            <div id="pmScreenshotWrap" style="display:none; text-align:center; padding:16px; background:#080202; border-bottom:1px solid var(--border-color);">
+                <img id="pmScreenshotImg" src="" style="max-width:100%; max-height:380px; border-radius:10px; border:1px solid var(--border-color); box-shadow:0 10px 25px rgba(0,0,0,0.5);" alt="Product Screenshot">
+            </div>
+
+            <!-- Default Graphic Banner -->
             <div id="pmBannerGraphic" style="display:none; padding:40px 20px; text-align:center; background:radial-gradient(circle, rgba(225,29,72,0.15) 0%, transparent 80%); border-bottom:1px solid var(--border-color);">
                 <div style="width:70px; height:70px; border-radius:50%; background:rgba(225,29,72,0.1); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:32px; color:var(--primary);">
                     <i class="fas fa-laptop-code"></i>
