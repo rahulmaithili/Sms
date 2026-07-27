@@ -18,8 +18,8 @@ if (isMaintenanceMode()) {
     exit();
 }
 
-// Redirect logged-in users
-if (isset($_SESSION['user_id'])) {
+// Redirect logged-in users unless in preview mode
+if (isset($_SESSION['user_id']) && !isset($_GET['preview'])) {
     if (isset($_SESSION['role']) && $_SESSION['role'] === 'customer') {
         header("Location: customer_portal.php");
     } else {
@@ -1217,7 +1217,13 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
 </head>
 <body>
 
-    <!-- Header Navigation -->
+    <?php if (isset($_SESSION['user_id']) && isset($_GET['preview'])): ?>
+    <div style="background:#e11d48; color:#fff; text-align:center; padding:8px 16px; font-size:13px; font-weight:700; position:fixed; top:0; left:0; right:0; z-index:999999; box-shadow:0 4px 12px rgba(0,0,0,0.3); display:flex; justify-content:center; align-items:center; gap:16px;">
+        <span><i class="fas fa-eye"></i> Admin Preview Mode — Viewing Live Frontend Website</span>
+        <a href="frontend_settings.php" style="background:#fff; color:#e11d48; padding:4px 14px; font-size:12px; border-radius:20px; font-weight:800; text-decoration:none;"><i class="fas fa-arrow-left"></i> Back to Controls</a>
+    </div>
+    <div style="height: 40px;"></div>
+    <?php endif; ?>
     <header>
         <div class="container navbar">
             <a href="index.php" class="logo-section">

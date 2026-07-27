@@ -225,7 +225,7 @@ $branding = getSiteBranding();
                     <p style="font-size:13px; opacity:0.8; margin-top:4px;">Enable/Disable website sections and customize main landing page content</p>
                 </div>
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <a href="index.php" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px;">
+                    <a href="index.php?preview=1" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px;">
                         <i class="fas fa-external-link-alt"></i> Live Site Preview
                     </a>
                     <?php include 'notifications_bell.php'; ?>
