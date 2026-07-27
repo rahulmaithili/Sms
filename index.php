@@ -649,13 +649,20 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
         }
 
         .payments-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            display: flex;
             gap: 20px;
-            justify-content: center;
+            overflow-x: auto;
+            padding: 10px 0 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .payments-grid::-webkit-scrollbar {
+            display: none;
         }
 
         .payment-method-card {
+            min-width: 180px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -666,6 +673,7 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
             align-items: center;
             gap: 12px;
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
         .payment-method-card:hover {
@@ -1873,10 +1881,10 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                 <div class="footer-col">
                     <h4>Legal &amp; Trust</h4>
                     <ul>
-                        <li><a href="login.php">Privacy Policy</a></li>
-                        <li><a href="login.php">Terms of Service</a></li>
-                        <li><a href="login.php">Refund Policy</a></li>
-                        <li><a href="login.php">Report an Issue</a></li>
+                        <li><a href="page.php?slug=privacy-policy">Privacy Policy</a></li>
+                        <li><a href="page.php?slug=terms-of-service">Terms of Service</a></li>
+                        <li><a href="page.php?slug=refund-policy">Refund Policy</a></li>
+                        <li><a href="page.php?slug=report-issue">Report an Issue</a></li>
                     </ul>
                 </div>
             </div>
@@ -1955,6 +1963,49 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
             const walk = (x - startX) * 1.5;
             wrapper.scrollLeft = scrollLeft - walk;
         });
+
+        // Payments Grid Scroller
+        const payWrapper = document.querySelector('.payments-grid');
+        if (payWrapper) {
+            let payIsDown = false;
+            let payStartX;
+            let payScrollLeft;
+            let payAutoScrollTimer;
+            
+            function autoScrollPayments() {
+                payAutoScrollTimer = setInterval(() => {
+                    if (payIsDown) return;
+                    payWrapper.scrollLeft += 1;
+                    if (payWrapper.scrollLeft >= (payWrapper.scrollWidth - payWrapper.clientWidth - 1)) {
+                        payWrapper.scrollLeft = 0;
+                    }
+                }, 30);
+            }
+            autoScrollPayments();
+
+            payWrapper.addEventListener('mouseenter', () => clearInterval(payAutoScrollTimer));
+            payWrapper.addEventListener('mouseleave', autoScrollPayments);
+
+            payWrapper.addEventListener('mousedown', (e) => {
+                payIsDown = true;
+                payStartX = e.pageX - payWrapper.offsetLeft;
+                payScrollLeft = payWrapper.scrollLeft;
+                clearInterval(payAutoScrollTimer);
+            });
+            payWrapper.addEventListener('mouseleave', () => payIsDown = false);
+            payWrapper.addEventListener('mouseup', () => {
+                payIsDown = false;
+                clearInterval(payAutoScrollTimer);
+                autoScrollPayments();
+            });
+            payWrapper.addEventListener('mousemove', (e) => {
+                if (!payIsDown) return;
+                e.preventDefault();
+                const x = e.pageX - payWrapper.offsetLeft;
+                const walk = (x - payStartX) * 1.5;
+                payWrapper.scrollLeft = payScrollLeft - walk;
+            });
+        }
     });
     </script>
 
