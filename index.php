@@ -1460,7 +1460,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">India</h4>
-                        <p class="review-text">"Rameez automated our entire school fee collection using Google Sheets and Apps Script. It saves us 20+ hours every week. The support response time is fast and the code quality is solid. Would hire again."</p>
+                        <p class="review-text">"Mr.Rahul automated our entire school fee collection using Google Sheets and Apps Script. It saves us 20+ hours every week. The support response time is fast and the code quality is solid. Would hire again."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">RS</div>
@@ -1478,7 +1478,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">USA</h4>
-                        <p class="review-text">"I hired Rameez to build a complete PHP &amp; MySQL inventory system with role-based access. Delivered on time, clean code, solid security. Our team across 3 states relies on it daily. Professional work, start to finish."</p>
+                        <p class="review-text">"I hired Mr.Rahul to build a complete PHP &amp; MySQL inventory system with role-based access. Delivered on time, clean code, solid security. Our team across 3 states relies on it daily. Professional work, start to finish."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">MJ</div>
@@ -1496,7 +1496,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">Canada</h4>
-                        <p class="review-text">"We needed a Google Sheets dashboard to track real-time sales across our 5 stores in Canada. Rameez built it with clean charts and automated email reports. Worth every dollar."</p>
+                        <p class="review-text">"We needed a Google Sheets dashboard to track real-time sales across our 5 stores in Canada. Mr.Rahul built it with clean charts and automated email reports. Worth every dollar."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">DL</div>
@@ -1514,7 +1514,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">UAE</h4>
-                        <p class="review-text">"Our company in Dubai needed a secure PHP admin panel with payment tracking and audit logs. Rameez delivered exactly what we needed — fast, secure, and clean. The support response time is quick — no waiting around."</p>
+                        <p class="review-text">"Our company in Dubai needed a secure PHP admin panel with payment tracking and audit logs. Mr.Rahul delivered exactly what we needed — fast, secure, and clean. The support response time is quick — no waiting around."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">AA</div>
@@ -1550,7 +1550,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">Pakistan</h4>
-                        <p class="review-text">"From a simple Google Sheets template to a full PHP web app with secure login — Rameez handled everything. Clean code, good-looking UI, and solid after-delivery support. I have already referred two friends."</p>
+                        <p class="review-text">"From a simple Google Sheets template to a full PHP web app with secure login — Mr.Rahul handled everything. Clean code, good-looking UI, and solid after-delivery support. I have already referred two friends."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">ZN</div>
@@ -1568,7 +1568,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">Qatar</h4>
-                        <p class="review-text">"I have been following Rameez from Qatar for some time and previously purchased scripts from his platform. After testing him with two custom PHP projects, I can confidently say he exceeded my expectations on both occasions. Not only did he deliver exactly what was requested, but he also added thoughtful enhancements that elevated my initial concept into fully functional, well-structured PHP platforms. His technical expertise, attention to detail, and proactive approach truly stood out. Thank you, Rameez."</p>
+                        <p class="review-text">"I have been following Mr.Rahul from Qatar for some time and previously purchased scripts from his platform. After testing him with two custom PHP projects, I can confidently say he exceeded my expectations on both occasions. Not only did he deliver exactly what was requested, but he also added thoughtful enhancements that elevated my initial concept into fully functional, well-structured PHP platforms. His technical expertise, attention to detail, and proactive approach truly stood out. Thank you, Mr.Rahul."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">BM</div>
@@ -1586,7 +1586,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">UK</h4>
-                        <p class="review-text">"We run a logistics company in London and needed a warehouse management system built on PHP &amp; MySQL. Rameez delivered a fully responsive dashboard with barcode scanning, stock alerts, and role-based access — all within two weeks. Solid work and fair pricing."</p>
+                        <p class="review-text">"We run a logistics company in London and needed a warehouse management system built on PHP &amp; MySQL. Mr.Rahul delivered a fully responsive dashboard with barcode scanning, stock alerts, and role-based access — all within two weeks. Solid work and fair pricing."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">JW</div>
@@ -1604,7 +1604,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">Nigeria</h4>
-                        <p class="review-text">"I needed a Google Sheets automation to manage student grades and generate report cards automatically. Rameez built an Apps Script solution with email notifications and PDF exports. It handles 500+ students without slowing down. Completely changed how we handle grading."</p>
+                        <p class="review-text">"I needed a Google Sheets automation to manage student grades and generate report cards automatically. Mr.Rahul built an Apps Script solution with email notifications and PDF exports. It handles 500+ students without slowing down. Completely changed how we handle grading."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">FK</div>
