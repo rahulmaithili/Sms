@@ -44,6 +44,25 @@ try {
 
 $branding = getSiteBranding();
 $currency = getCurrency();
+
+// Frontend Section Toggle & Custom Content Settings
+$show_hero_orbit        = getSetting('show_hero_orbit', '1');
+$show_portfolio_section = getSetting('show_portfolio_section', '1');
+$show_support_section   = getSetting('show_support_section', '1');
+$show_products_section  = getSetting('show_products_section', '1');
+$show_reviews_section   = getSetting('show_reviews_section', '1');
+$show_payments_section  = getSetting('show_payments_section', '1');
+$show_membership_section= getSetting('show_membership_section', '1');
+$show_faq_section       = getSetting('show_faq_section', '1');
+$show_presence_section  = getSetting('show_presence_section', '1');
+$show_floating_whatsapp = getSetting('show_floating_whatsapp', '1');
+
+$hero_badge_text        = getSetting('hero_badge_text', 'Building Since 2022 · 400+ Projects Shipped to 50+ Countries');
+$hero_headline          = getSetting('hero_headline', 'Hire a Google Apps Script Developer');
+$hero_subtitle          = getSetting('hero_subtitle', 'If your team is wasting hours on manual spreadsheet work or disconnected systems — we can fix that. We build Google Sheets automations, Apps Script add-ons, and custom PHP web applications. 400+ projects shipped across 50+ countries, with 6 months of post-delivery support included.');
+$support_whatsapp_number= getSetting('support_whatsapp_number', '+923394100600');
+$support_whatsapp_clean = preg_replace('/[^0-9]/', '', $support_whatsapp_number);
+$support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulScripts.com');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1230,12 +1249,12 @@ $currency = getCurrency();
     <section class="hero">
         <div class="container hero-grid">
             <div class="hero-content">
-                <span class="hero-badge"><i class="fas fa-circle"></i> Building Since 2022 · 400+ Projects Shipped to 50+ Countries</span>
-                <h1>Hire a Google Apps Script Developer</h1>
-                <p>If your team is wasting hours on manual spreadsheet work or disconnected systems — we can fix that. We build Google Sheets automations, Apps Script add-ons, and custom PHP web applications. 400+ projects shipped across 50+ countries, with 6 months of post-delivery support included.</p>
+                <span class="hero-badge"><i class="fas fa-circle"></i> <?php echo htmlspecialchars($hero_badge_text); ?></span>
+                <h1><?php echo htmlspecialchars($hero_headline); ?></h1>
+                <p><?php echo htmlspecialchars($hero_subtitle); ?></p>
                 
                 <div class="hero-btn-group">
-                    <a href="https://wa.me/923394100600" class="btn btn-success"><i class="fab fa-whatsapp"></i> Get a Free Quote on WhatsApp</a>
+                    <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" class="btn btn-success"><i class="fab fa-whatsapp"></i> Get a Free Quote on WhatsApp</a>
                     <a href="#portfolio" class="btn btn-outline">Apps Script Projects</a>
                     <a href="#products" class="btn btn-outline">PHP MySQL Projects</a>
                 </div>
@@ -1248,6 +1267,7 @@ $currency = getCurrency();
                 </div>
             </div>
 
+            <?php if ($show_hero_orbit === '1'): ?>
             <!-- Dynamic Rotating CSS Orbit Graphic -->
             <div class="hero-graphic-wrap">
                 <div class="orbit-container">
@@ -1265,9 +1285,11 @@ $currency = getCurrency();
                     <div class="orbit-node node-6" title="PHP"><i class="fab fa-php" style="color:#777BB4;"></i></div>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </section>
 
+    <?php if ($show_portfolio_section === '1'): ?>
     <!-- Portfolio / Popular Apps Script Templates Section -->
     <section class="portfolio-sec" id="portfolio">
         <div class="container">
@@ -1297,7 +1319,7 @@ $currency = getCurrency();
                         </div>
                         <div class="portfolio-btns">
                             <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
-                            <a href="https://wa.me/923394100600" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                            <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                         </div>
                     </div>
                 </div>
@@ -1322,7 +1344,7 @@ $currency = getCurrency();
                         </div>
                         <div class="portfolio-btns">
                             <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
-                            <a href="https://wa.me/923394100600" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                            <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                         </div>
                     </div>
                 </div>
@@ -1347,7 +1369,7 @@ $currency = getCurrency();
                         </div>
                         <div class="portfolio-btns">
                             <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
-                            <a href="https://wa.me/923394100600" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                            <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                         </div>
                     </div>
                 </div>
@@ -1358,7 +1380,9 @@ $currency = getCurrency();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($show_support_section === '1'): ?>
     <!-- Support Contacts section -->
     <section class="support-sec" id="support">
         <div class="container">
@@ -1374,7 +1398,7 @@ $currency = getCurrency();
                     <h3>WhatsApp</h3>
                     <p>The fastest way to reach us. Quotes, project questions, bug reports, or plan activation — message anytime, from any timezone.</p>
                     <span class="support-badge">Avg reply under 2 hours</span>
-                    <a href="https://wa.me/923394100600" class="btn btn-success"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+                    <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" class="btn btn-success"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
                 </div>
 
                 <!-- Email Card -->
@@ -1383,7 +1407,7 @@ $currency = getCurrency();
                     <h3>Email</h3>
                     <p>Prefer writing it all down? Send your requirements, screenshots, or files — you get a detailed reply with clear next steps.</p>
                     <span class="support-badge">Replies within a few hours</span>
-                    <a href="mailto:contact@Mr.RahulScripts.com" class="btn btn-primary" style="background:#dc3545; box-shadow:none;"><i class="fas fa-paper-plane"></i> contact@Mr.RahulScripts.com</a>
+                    <a href="mailto:<?php echo htmlspecialchars($support_email_address); ?>" class="btn btn-primary" style="background:#dc3545; box-shadow:none;"><i class="fas fa-paper-plane"></i> <?php echo htmlspecialchars($support_email_address); ?></a>
                 </div>
 
                 <!-- Help Desk Card -->
@@ -1397,7 +1421,9 @@ $currency = getCurrency();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($show_products_section === '1'): ?>
     <!-- Dynamic Products Catalog Section -->
     <section class="showcase" id="products">
         <div class="container">
@@ -1443,7 +1469,9 @@ $currency = getCurrency();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($show_reviews_section === '1'): ?>
     <!-- Testimonials Slider Section -->
     <section class="reviews-sec" id="reviews">
         <div class="container">
@@ -1622,7 +1650,9 @@ $currency = getCurrency();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($show_payments_section === '1'): ?>
     <!-- Payments Section -->
     <section class="payments-sec" id="payments">
         <div class="container">
@@ -1653,7 +1683,9 @@ $currency = getCurrency();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($show_membership_section === '1'): ?>
     <!-- Membership section -->
     <section class="membership-sec" id="membership">
         <div class="container">
@@ -1712,7 +1744,9 @@ $currency = getCurrency();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($show_faq_section === '1'): ?>
     <!-- FAQ Section -->
     <section class="faq-sec" id="faq">
         <div class="container">
@@ -1749,7 +1783,9 @@ $currency = getCurrency();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($show_presence_section === '1'): ?>
     <!-- Global office locations Section -->
     <section class="footer-presence">
         <div class="container">
@@ -1790,6 +1826,7 @@ $currency = getCurrency();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
     <!-- Detailed Footer -->
     <footer class="site-footer">
@@ -1814,11 +1851,11 @@ $currency = getCurrency();
                 <div class="footer-col">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="https://wa.me/923394100600">Google Sheets &amp; Apps Script</a></li>
-                        <li><a href="https://wa.me/923394100600">PHP &amp; MySQL Development</a></li>
+                        <li><a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>">Google Sheets &amp; Apps Script</a></li>
+                        <li><a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>">PHP &amp; MySQL Development</a></li>
                         <li><a href="login.php">Security &amp; Payments</a></li>
                         <li><a href="login.php">Custom Web Applications</a></li>
-                        <li><a href="https://wa.me/923394100600">WhatsApp Automation</a></li>
+                        <li><a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>">WhatsApp Automation</a></li>
                     </ul>
                 </div>
 
@@ -1826,8 +1863,8 @@ $currency = getCurrency();
                     <h4>Contact Details</h4>
                     <ul class="footer-contact-info">
                         <li><i class="fas fa-map-marker-alt"></i> Pakistan · Canada · India</li>
-                        <li><i class="fab fa-whatsapp"></i> +923394100600</li>
-                        <li><i class="fas fa-envelope"></i> contact@Mr.RahulScripts.com</li>
+                        <li><i class="fab fa-whatsapp"></i> <?php echo htmlspecialchars($support_whatsapp_number); ?></li>
+                        <li><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($support_email_address); ?></li>
                         <li><i class="fab fa-youtube"></i> <a href="https://youtube.com/@rameezimdad" target="_blank" style="color:var(--text-muted); text-decoration:none;">YouTube Channel</a></li>
                     </ul>
                 </div>
@@ -1854,10 +1891,12 @@ $currency = getCurrency();
         </div>
     </footer>
 
+    <?php if ($show_floating_whatsapp === '1'): ?>
     <!-- Floating support badge -->
     <div class="floating-support-badge">
-        <a href="https://wa.me/923394100600" target="_blank" class="btn btn-success" style="padding: 12px 20px; border-radius: 50px; font-size:13px; box-shadow: 0 4px 15px rgba(16,185,129,0.4);"><i class="fab fa-whatsapp" style="font-size:16px;"></i> WhatsApp Support</a>
+        <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" target="_blank" class="btn btn-success" style="padding: 12px 20px; border-radius: 50px; font-size:13px; box-shadow: 0 4px 15px rgba(16,185,129,0.4);"><i class="fab fa-whatsapp" style="font-size:16px;"></i> WhatsApp Support</a>
     </div>
+    <?php endif; ?>
 
     <!-- Automatic Testimonials Scroller -->
     <script>

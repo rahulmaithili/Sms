@@ -26,7 +26,7 @@ $image_src = $profile_image ? $profile_image : $default_logo;
 
 // Check if any submenu item is active
 $account_submenu_active = in_array($current_page, ['account', 'logs']);
-$system_submenu_active = in_array($current_page, ['settings', 'oauth_setup', 'smtp_setup', 'sessions', 'backup', 'notification_logs']);
+$system_submenu_active = in_array($current_page, ['settings', 'frontend_settings', 'oauth_setup', 'smtp_setup', 'sessions', 'backup', 'notification_logs']);
 // Get user's custom theme
 $user_theme = getUserTheme($user_id);
 // Get default language for Google Translate
@@ -232,6 +232,12 @@ echo generateUserThemeCSS($user_id);
                         <a href="settings.php" class="<?php echo $current_page === 'settings' ? 'active' : ''; ?>">
                             <i class="fas fa-cog"></i>
                             <span>Site Settings</span>
+                        </a>
+                    </li>
+                    <li data-tooltip="Frontend Controls">
+                        <a href="frontend_settings.php" class="<?php echo $current_page === 'frontend_settings' ? 'active' : ''; ?>">
+                            <i class="fas fa-desktop"></i>
+                            <span>Frontend Controls</span>
                         </a>
                     </li>
                     <li data-tooltip="OAuth Setup">
