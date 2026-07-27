@@ -416,6 +416,130 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
             to { transform: rotate(0deg); }
         }
 
+        /* Section Headers & Category Tag Style */
+        .section-header {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto 50px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fb7185;
+            margin-bottom: 8px;
+        }
+
+        .section-header h2 {
+            font-family: var(--title-font);
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .section-accent-line {
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            margin: 14px auto 0;
+            border-radius: 2px;
+        }
+
+        /* Membership Hero Banner Box */
+        .membership-hero-banner {
+            background: radial-gradient(circle at center, #240a0c 0%, #140405 100%);
+            border: 1px solid rgba(225, 29, 72, 0.35);
+            border-radius: 20px;
+            padding: 45px 30px;
+            text-align: center;
+            max-width: 950px;
+            margin: 0 auto 50px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .m-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(225, 29, 72, 0.15);
+            border: 1px solid rgba(225, 29, 72, 0.4);
+            color: #fb7185;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .membership-hero-banner h2 {
+            font-family: var(--title-font);
+            font-size: 30px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
+        }
+
+        .membership-hero-banner p {
+            color: #cbd5e1;
+            font-size: 15px;
+            max-width: 750px;
+            margin: 0 auto 24px;
+            line-height: 1.6;
+        }
+
+        .m-hero-features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .m-hero-features span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .m-hero-btn {
+            background: #ef4444;
+            border: none;
+            color: #fff;
+            padding: 13px 32px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .m-hero-btn:hover {
+            background: #f43f5e;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.6);
+        }
+
         /* Portfolio Section */
         .portfolio-sec {
             padding: 100px 0;
@@ -1362,8 +1486,10 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
     <section class="portfolio-sec" id="portfolio">
         <div class="container">
             <div class="section-header">
+                <span class="section-tag">PORTFOLIO</span>
                 <h2>Popular Apps Script Templates &amp; Source Code</h2>
                 <p>These are our most downloaded scripts — each one has a full video walkthrough on YouTube.</p>
+                <div class="section-accent-line"></div>
             </div>
 
             <div class="portfolio-grid">
@@ -1474,8 +1600,10 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
     <section class="showcase" id="products">
         <div class="container">
             <div class="section-header">
+                <span class="section-tag">CATALOG &amp; EXTENSIONS</span>
                 <h2>Product Showcase &amp; Extensions</h2>
                 <p>Select any extension or template to get instant billing, auto-license generation, and dynamic downloads.</p>
+                <div class="section-accent-line"></div>
             </div>
 
             <div class="product-grid">
@@ -1744,11 +1872,27 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
     <section class="membership-sec" id="membership">
         <div class="container">
             <div class="section-header">
+                <span class="section-tag">PRICING</span>
                 <h2>Membership Plans</h2>
-                <p>One plan. Every script. Full access to source code library.</p>
+                <p>Get instant access to the full script library — activate online in minutes, no waiting.</p>
+                <div class="section-accent-line"></div>
             </div>
 
-            <div class="membership-grid">
+            <!-- All-Access Membership Hero Banner Box -->
+            <div class="membership-hero-banner">
+                <div class="m-hero-badge"><i class="fas fa-shield-alt" style="color:#fb7185;"></i> ALL-ACCESS MEMBERSHIP</div>
+                <h2>One Plan. Every Script. Full Source Code.</h2>
+                <p>Instead of buying scripts one by one, get access to everything — every template and source code I have built, plus everything I ship in the future. One plan, no restrictions.</p>
+                <div class="m-hero-features">
+                    <span><i class="fas fa-check-circle" style="color:#ef4444;"></i> Full Script Library</span>
+                    <span><i class="fas fa-check-circle" style="color:#ef4444;"></i> Complete Source Code</span>
+                    <span><i class="fas fa-check-circle" style="color:#ef4444;"></i> Future Scripts Included</span>
+                    <span><i class="fas fa-check-circle" style="color:#ef4444;"></i> 6 Months Direct Support</span>
+                </div>
+                <a href="#pricing-grid" class="m-hero-btn"><i class="fas fa-arrow-down"></i> View Plans</a>
+            </div>
+
+            <div class="membership-grid" id="pricing-grid">
                 <!-- Plan 1 -->
                 <div class="membership-card">
                     <div>
