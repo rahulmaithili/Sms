@@ -55,6 +55,9 @@ try {
 
 $branding = getSiteBranding();
 $currency = getCurrency();
+if (empty($currency) || $currency === '$' || $currency === 'USD') {
+    $currency = 'INR';
+}
 
 // Frontend Section Toggle & Custom Content Settings
 $show_hero_orbit        = getSetting('show_hero_orbit', '1');
@@ -1694,7 +1697,7 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                 <div class="membership-card">
                     <div>
                         <h3>Weekly Plan</h3>
-                        <div class="membership-price">$15 <span>/ 7 days</span></div>
+                        <div class="membership-price"><?php echo htmlspecialchars($currency); ?> 999 <span>/ 7 days</span></div>
                         <ul class="membership-features">
                             <li><i class="fas fa-check-circle"></i> Full Source Access</li>
                             <li><i class="fas fa-check-circle"></i> Dynamic ZIP downloads</li>
@@ -1709,7 +1712,7 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                 <div class="membership-card premium">
                     <div>
                         <h3>Premium Plan</h3>
-                        <div class="membership-price">$80 <span>/ 180 days</span></div>
+                        <div class="membership-price"><?php echo htmlspecialchars($currency); ?> 4,999 <span>/ 180 days</span></div>
                         <ul class="membership-features">
                             <li><i class="fas fa-check-circle"></i> Full Source Access</li>
                             <li><i class="fas fa-check-circle"></i> Dynamic ZIP downloads</li>
@@ -1725,7 +1728,7 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                 <div class="membership-card">
                     <div>
                         <h3>VIP Premium Plan</h3>
-                        <div class="membership-price">$100 <span>/ 365 days</span></div>
+                        <div class="membership-price"><?php echo htmlspecialchars($currency); ?> 7,999 <span>/ 365 days</span></div>
                         <ul class="membership-features">
                             <li><i class="fas fa-check-circle"></i> Full Source Access</li>
                             <li><i class="fas fa-check-circle"></i> Dynamic ZIP downloads</li>
