@@ -1383,7 +1383,7 @@ $currency = getCurrency();
                     <h3>Email</h3>
                     <p>Prefer writing it all down? Send your requirements, screenshots, or files — you get a detailed reply with clear next steps.</p>
                     <span class="support-badge">Replies within a few hours</span>
-                    <a href="mailto:contact@rameezscripts.com" class="btn btn-primary" style="background:#dc3545; box-shadow:none;"><i class="fas fa-paper-plane"></i> contact@rameezscripts.com</a>
+                    <a href="mailto:contact@Mr.RahulScripts.com" class="btn btn-primary" style="background:#dc3545; box-shadow:none;"><i class="fas fa-paper-plane"></i> contact@Mr.RahulScripts.com</a>
                 </div>
 
                 <!-- Help Desk Card -->
@@ -1532,7 +1532,7 @@ $currency = getCurrency();
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
                         <h4 class="country-tag">France</h4>
-                        <p class="review-text">"I discovered Rameez Scripts on YouTube and was impressed by the tutorials. Got a custom Apps Script solution for our restaurant chain's booking system. The quality speaks for itself. Merci beaucoup!"</p>
+                        <p class="review-text">"I discovered Mr.Rahul Scripts on YouTube and was impressed by the tutorials. Got a custom Apps Script solution for our restaurant chain's booking system. The quality speaks for itself. Merci beaucoup!"</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">PD</div>
@@ -1744,7 +1744,7 @@ $currency = getCurrency();
                 </div>
                 <div class="faq-item">
                     <h3><i class="fas fa-question-circle"></i> Can I see examples of your past work?</h3>
-                    <p>Yes! Check our YouTube channel "Rameez Scripts" where we show full video walkthroughs and live demos of major source code templates.</p>
+                    <p>Yes! Check our YouTube channel "Mr.Rahul Scripts" where we show full video walkthroughs and live demos of major source code templates.</p>
                 </div>
             </div>
         </div>
@@ -1827,7 +1827,7 @@ $currency = getCurrency();
                     <ul class="footer-contact-info">
                         <li><i class="fas fa-map-marker-alt"></i> Pakistan · Canada · India</li>
                         <li><i class="fab fa-whatsapp"></i> +923394100600</li>
-                        <li><i class="fas fa-envelope"></i> contact@rameezscripts.com</li>
+                        <li><i class="fas fa-envelope"></i> contact@Mr.RahulScripts.com</li>
                         <li><i class="fab fa-youtube"></i> <a href="https://youtube.com/@rameezimdad" target="_blank" style="color:var(--text-muted); text-decoration:none;">YouTube Channel</a></li>
                     </ul>
                 </div>
@@ -1844,9 +1844,9 @@ $currency = getCurrency();
             </div>
 
             <div class="footer-bottom">
-                <p class="copyright">&copy; 2022-<?php echo date('Y'); ?> Rameez Scripts. All Rights Reserved.</p>
+                <p class="copyright">&copy; 2022-<?php echo date('Y'); ?> Mr.Rahul Scripts. All Rights Reserved.</p>
                 <p class="legal-note">
-                    Rameez Scripts is a registered software development business owned by Mohammad Rameez Imdad, operated from Pakistan, Canada and India. All transactions are processed over secure, encrypted connections.
+                    Mr.Rahul Scripts is a registered software development business owned by Rahul Maithili, operated from Pakistan, Canada and India. All transactions are processed over secure, encrypted connections.
                     <br>
                     <span style="opacity: 0.8; font-weight: bold; display: block; margin-top: 8px;">Page last updated: July 2026</span>
                 </p>

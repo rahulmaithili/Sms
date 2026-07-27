@@ -1,6 +1,6 @@
 <?php
 /**
- * Developed by Rameez Scripts
+ * Developed by Mr.Rahul Scripts
  * WhatsApp: https://wa.me/923224083545 (For Custom Projects)
  * YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
  */
@@ -106,7 +106,7 @@ if (isset($_GET['action'])) {
                 $pstmt->close();
 
                 // Fetch company settings
-                $company_name     = getSetting('company_name', 'Rameez Scripts');
+                $company_name     = getSetting('company_name', 'Mr.Rahul Scripts');
                 $company_email    = getSetting('company_email', '');
                 $company_logo_url = getSetting('company_logo_url', 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGXxCe0WNNedmFqSWeF761f7Kshhc-NP5ChRQKz9fr97cO8VaarvD0KlCwqHojJVBWv-RAxfOqMI5rD4H78KnARyOc6QgwL1nRRFWf5xNQ1d9F9HfAoLPPGlTyP0GwNl4n-INMEsWLQ4Y7zJtz5bOdAnc2ePH9-uCRgshlo6BsS6gJEz6fhrxL-5U5O3sX/s160/channels4_profile.jpg');
                 $currency         = getSetting('currency', 'USD');
@@ -182,7 +182,7 @@ if ($sl <= 0) {
 }
 ?>
 <!--
-  Developed by Rameez Scripts
+  Developed by Mr.Rahul Scripts
   WhatsApp: https://wa.me/923224083545 (For Custom Projects)
   YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
 -->

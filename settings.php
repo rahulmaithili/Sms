@@ -1,6 +1,6 @@
 <?php
 /**
- * Developed by Rameez Scripts
+ * Developed by Mr.Rahul Scripts
  * WhatsApp: https://wa.me/923224083545 (For Custom Projects)
  * YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
  *
@@ -46,7 +46,7 @@ if (isset($_POST['action'])) {
             echo json_encode([
                 'success' => true,
                 'data'    => [
-                    'company_name'               => getSetting('company_name',               'Rameez Scripts'),
+                    'company_name'               => getSetting('company_name',               'Mr.Rahul Scripts'),
                     'company_email'              => getSetting('company_email',              'admin@company.com'),
                     'copyright_text'             => getSetting('copyright_text',             ''),
                     'company_logo_url'           => getSetting('company_logo_url',           '') ?: getSetting('site_logo', ''),
@@ -326,7 +326,7 @@ if (isset($_POST['action'])) {
 }
 ?>
 <!--
-  Developed by Rameez Scripts
+  Developed by Mr.Rahul Scripts
   WhatsApp: https://wa.me/923224083545 (For Custom Projects)
   YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
 -->
@@ -423,7 +423,7 @@ if (isset($_POST['action'])) {
                         <div class="form-grid">
                             <div class="form-group">
                                 <label><i class="fas fa-building"></i> Company Name</label>
-                                <input type="text" id="companyName" placeholder="Rameez Scripts" maxlength="150">
+                                <input type="text" id="companyName" placeholder="Mr.Rahul Scripts" maxlength="150">
                             </div>
                             <div class="form-group">
                                 <label><i class="fas fa-envelope"></i> Company Email</label>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Developed by Rameez Scripts
+ * Developed by Mr.Rahul Scripts
  * WhatsApp: https://wa.me/923224083545 (For Custom Projects)
  * YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
  */
@@ -70,7 +70,7 @@ $display_logo    = !empty($company_logo) ? $company_logo : $default_logo;
                     </div>
                     <div class="about-title">
                         <h1><?php echo htmlspecialchars($branding['site_name']); ?></h1>
-                        <p class="about-dev">Developed by <strong>Mohammad Rameez Imdad</strong> (Rameez Scripts)</p>
+                        <p class="about-dev">Developed by <strong>Rahul Maithili</strong> (Mr.Rahul Scripts)</p>
                     </div>
                 </div>
 

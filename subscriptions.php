@@ -1,6 +1,6 @@
 <?php
 /**
- * Developed by Rameez Scripts
+ * Developed by Mr.Rahul Scripts
  * WhatsApp: https://wa.me/923224083545 (For Custom Projects)
  * YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
  */
@@ -1146,7 +1146,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'importSubscriptions') {
 // If we reach here, render the HTML page
 ?>
 <!--
-  Developed by Rameez Scripts
+  Developed by Mr.Rahul Scripts
   WhatsApp: https://wa.me/923224083545 (For Custom Projects)
   YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
 -->

@@ -1,6 +1,6 @@
 <?php
 /**
- * Developed by Rameez Scripts
+ * Developed by Mr.Rahul Scripts
  * PWA Manifest — dynamic branding
  */
 require_once 'config.php';

@@ -1,5 +1,5 @@
 /**
- * Developed by Rameez Scripts
+ * Developed by Mr.Rahul Scripts
  * Service Worker — cache static assets, network-first for API
  */
 var CACHE_NAME = 'sub-mgmt-v2';

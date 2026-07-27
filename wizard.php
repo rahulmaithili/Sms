@@ -1,6 +1,6 @@
 <?php
 /**
- * Developed by Rameez Scripts
+ * Developed by Mr.Rahul Scripts
  * WhatsApp: https://wa.me/923224083545 (For Custom Projects)
  * YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
  *
@@ -240,7 +240,7 @@ $logo_url = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGXxCe0W
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Developed by Rameez Scripts -->
+<!-- Developed by Mr.Rahul Scripts -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Setup Wizard - Subscription Management</title>
@@ -249,7 +249,7 @@ $logo_url = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGXxCe0W
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
-/* Developed by Rameez Scripts */
+/* Developed by Mr.Rahul Scripts */
 :root {
     --navy-primary: #001f3f;
     --navy-dark: #001529;
@@ -469,7 +469,7 @@ body {
 <div id="loadWrap"></div>
 
 <script>
-/** Developed by Rameez Scripts */
+/** Developed by Mr.Rahul Scripts */
 
 // data from PHP
 const currencies = <?php echo json_encode($currencies); ?>;

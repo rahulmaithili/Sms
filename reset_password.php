@@ -1,6 +1,6 @@
 <?php
 /**
- * Developed by Rameez Scripts
+ * Developed by Mr.Rahul Scripts
  * WhatsApp: https://wa.me/923224083545 (For Custom Projects)
  * YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
  *
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 <!--
-  Developed by Rameez Scripts
+  Developed by Mr.Rahul Scripts
   WhatsApp: https://wa.me/923224083545 (For Custom Projects)
   YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
 -->
