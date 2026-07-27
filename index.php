@@ -1794,48 +1794,7 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
     </section>
     <?php endif; ?>
 
-    <?php if ($show_presence_section === '1'): ?>
-    <!-- Global office locations Section -->
-    <section class="footer-presence">
-        <div class="container">
-            <h3 class="presence-title">Global Presence &amp; Registry</h3>
-            <div class="presence-grid">
-                <div class="presence-card">
-                    <div class="presence-flag">
-                        <img src="https://flagcdn.com/w40/in.png" alt="India">
-                    </div>
-                    <div class="presence-meta">
-                        <h4>India Hub</h4>
-                        <p>MSME Registered Software Entity</p>
-                        <span class="presence-badge">Operating Node</span>
-                    </div>
-                </div>
 
-                <div class="presence-card">
-                    <div class="presence-flag">
-                        <img src="https://flagcdn.com/w40/pk.png" alt="Pakistan">
-                    </div>
-                    <div class="presence-meta">
-                        <h4>Pakistan Office</h4>
-                        <p>PSEB Registered Export Unit</p>
-                        <span class="presence-badge">Operations Hub</span>
-                    </div>
-                </div>
-
-                <div class="presence-card">
-                    <div class="presence-flag">
-                        <img src="https://flagcdn.com/w40/ca.png" alt="Canada">
-                    </div>
-                    <div class="presence-meta">
-                        <h4>Canada Node</h4>
-                        <p>Import &amp; Global Compliance</p>
-                        <span class="presence-badge">Worldwide Delivery</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
 
     <!-- Detailed Footer -->
     <footer class="site-footer">
