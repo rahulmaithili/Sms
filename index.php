@@ -1447,11 +1447,14 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
                                     </ul>
                                 </div>
                                 <div class="product-card-btns">
-                                    <?php if (!empty($prod['preview_url'])): ?>
-                                        <a href="javascript:void(0);" onclick="openPreviewModal('<?php echo htmlspecialchars(addslashes($prod['product_name'])); ?>', '<?php echo htmlspecialchars(addslashes($prod['preview_url'])); ?>')" class="btn btn-outline"><i class="fas fa-play-circle"></i> Preview</a>
-                                    <?php else: ?>
-                                        <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>?text=<?php echo urlencode('Hi Mr.Rahul, I want a demo for: ' . $prod['product_name']); ?>" target="_blank" class="btn btn-outline"><i class="fas fa-play-circle"></i> Preview</a>
-                                    <?php endif; ?>
+                                    <a href="javascript:void(0);" onclick='openProductPreviewModal(<?php echo json_encode([
+                                        "name" => $prod["product_name"],
+                                        "code" => $prod["product_code"],
+                                        "price" => htmlspecialchars($currency) . " " . number_format((float)$prod["selling_price"], 2),
+                                        "description" => $prod["description"] ?? "Premium browser automation utility script configured with secure licensing.",
+                                        "preview_url" => $prod["preview_url"] ?? "",
+                                        "color" => $color
+                                    ], JSON_HEX_APOS | JSON_HEX_QUOT); ?>)' class="btn btn-outline"><i class="fas fa-play-circle"></i> Preview</a>
                                     <a href="signup.php" class="btn btn-primary" style="background:<?php echo $color; ?>; box-shadow:none;">Buy Now</a>
                                 </div>
                             </div>
@@ -1978,6 +1981,56 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
         if (modal) modal.style.display = 'none';
         if (modalIframe) modal.src = '';
     }
+
+    // Comprehensive Product Preview Modal Handler
+    function openProductPreviewModal(prod) {
+        const modal        = document.getElementById('productPreviewModal');
+        const codeElem     = document.getElementById('pmProductCode');
+        const nameElem     = document.getElementById('pmProductName');
+        const priceElem    = document.getElementById('pmProductPrice');
+        const descElem     = document.getElementById('pmProductDesc');
+        const videoWrap    = document.getElementById('pmVideoWrap');
+        const iframe       = document.getElementById('pmIframe');
+        const bannerWrap   = document.getElementById('pmBannerGraphic');
+        const waBtn        = document.getElementById('pmWaBtn');
+        const buyBtn       = document.getElementById('pmBuyBtn');
+
+        if (!modal) return;
+
+        codeElem.innerText  = prod.code || 'PRODUCT';
+        nameElem.innerText  = prod.name || 'Product Preview';
+        priceElem.innerText = prod.price || '';
+        descElem.innerText  = prod.description || '';
+
+        const whatsappNum = '<?php echo $support_whatsapp_clean; ?>';
+        const msgText     = encodeURIComponent('Hi Mr.Rahul, I am interested in: ' + prod.name + ' (' + prod.code + ')');
+        waBtn.href        = 'https://wa.me/' + whatsappNum + '?text=' + msgText;
+
+        if (prod.preview_url && prod.preview_url.trim() !== '') {
+            let embedUrl = prod.preview_url;
+            if (embedUrl.includes('youtube.com/watch?v=')) {
+                embedUrl = embedUrl.replace('watch?v=', 'embed/');
+            } else if (embedUrl.includes('youtu.be/')) {
+                embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
+            }
+            iframe.src = embedUrl;
+            videoWrap.style.display = 'block';
+            bannerWrap.style.display = 'none';
+        } else {
+            iframe.src = '';
+            videoWrap.style.display = 'none';
+            bannerWrap.style.display = 'block';
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    function closeProductPreviewModal() {
+        const modal  = document.getElementById('productPreviewModal');
+        const iframe = document.getElementById('pmIframe');
+        if (modal) modal.style.display = 'none';
+        if (iframe) iframe.src = '';
+    }
     </script>
 
     <!-- Video / Demo Preview Modal -->
@@ -1993,6 +2046,66 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
             <div style="padding:16px 24px; background:rgba(0,0,0,0.4); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                 <span style="font-size:13px; color:var(--text-muted);">Need a custom build or source code license?</span>
                 <a href="https://wa.me/<?php echo $support_whatsapp_clean; ?>" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Interactive Preview Modal -->
+    <div id="productPreviewModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(12px); z-index:999999; justify-content:center; align-items:center; padding:20px; overflow-y:auto;">
+        <div style="background:var(--bg-card, #1c0809); border:1px solid var(--border-color, #e11d48); border-radius:18px; width:100%; max-width:750px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.6); position:relative; margin:auto;">
+            
+            <!-- Header -->
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 26px; border-bottom:1px solid var(--border-color); background:rgba(0,0,0,0.2);">
+                <div>
+                    <span id="pmProductCode" style="font-size:11px; font-weight:800; background:rgba(225,29,72,0.15); color:var(--primary); padding:3px 10px; border-radius:12px; text-transform:uppercase; letter-spacing:0.5px;"></span>
+                    <h2 id="pmProductName" style="color:#fff; font-family:var(--title-font); font-size:22px; font-weight:800; margin-top:6px;"></h2>
+                </div>
+                <button onclick="closeProductPreviewModal()" style="background:none; border:none; color:#fff; font-size:28px; cursor:pointer; opacity:0.8;">&times;</button>
+            </div>
+
+            <!-- Video / Preview Banner -->
+            <div id="pmVideoWrap" style="display:none; position:relative; padding-bottom:56.25%; height:0; background:#000;">
+                <iframe id="pmIframe" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen></iframe>
+            </div>
+
+            <div id="pmBannerGraphic" style="display:none; padding:40px 20px; text-align:center; background:radial-gradient(circle, rgba(225,29,72,0.15) 0%, transparent 80%); border-bottom:1px solid var(--border-color);">
+                <div style="width:70px; height:70px; border-radius:50%; background:rgba(225,29,72,0.1); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:32px; color:var(--primary);">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h3 style="color:#fff; font-size:18px; margin-bottom:8px;">Live Interactive Preview &amp; Walkthrough</h3>
+                <p style="color:var(--text-muted); font-size:14px; max-width:500px; margin:0 auto;">Instant activation key delivery with full source code package &amp; 6 months free developer support included.</p>
+            </div>
+
+            <!-- Details Body -->
+            <div style="padding:26px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:rgba(0,0,0,0.3); padding:16px 20px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+                    <div>
+                        <span style="font-size:12px; color:var(--text-muted); display:block;">License Price</span>
+                        <strong id="pmProductPrice" style="font-size:24px; color:#fff; font-weight:800;"></strong>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="font-size:12px; color:#10b981; font-weight:700;"><i class="fas fa-bolt"></i> Instant Download</span>
+                        <span style="display:block; font-size:11px; color:var(--text-muted);">ZIP Package + License Key</span>
+                    </div>
+                </div>
+
+                <p id="pmProductDesc" style="color:#cbd5e1; font-size:14px; line-height:1.6; margin-bottom:20px;"></p>
+
+                <div style="margin-bottom:24px;">
+                    <h4 style="font-size:13px; font-weight:700; color:#fff; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;"><i class="fas fa-shield-alt" style="color:var(--primary);"></i> Included Package Features:</h4>
+                    <ul style="list-style:none; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px; color:#cbd5e1;">
+                        <li><i class="fas fa-check-circle" style="color:#10b981;"></i> Instant License Key Delivery</li>
+                        <li><i class="fas fa-check-circle" style="color:#10b981;"></i> Full Source Code ZIP Package</li>
+                        <li><i class="fas fa-check-circle" style="color:#10b981;"></i> 6 Months Free Support</li>
+                        <li><i class="fas fa-check-circle" style="color:#10b981;"></i> Free Updates &amp; Bug Fixes</li>
+                    </ul>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                    <a href="signup.php" id="pmBuyBtn" class="btn btn-primary" style="flex:1; justify-content:center; padding:14px; font-size:15px; font-weight:700; box-shadow:none;"><i class="fas fa-shopping-cart"></i> Buy Now</a>
+                    <a id="pmWaBtn" href="#" target="_blank" class="btn btn-success" style="padding:14px 20px; font-size:14px;"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+                </div>
             </div>
         </div>
     </div>
