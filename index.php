@@ -1859,5 +1859,64 @@ $currency = getCurrency();
         <a href="https://wa.me/923394100600" target="_blank" class="btn btn-success" style="padding: 12px 20px; border-radius: 50px; font-size:13px; box-shadow: 0 4px 15px rgba(16,185,129,0.4);"><i class="fab fa-whatsapp" style="font-size:16px;"></i> WhatsApp Support</a>
     </div>
 
+    <!-- Automatic Testimonials Scroller -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const wrapper = document.querySelector('.testimonials-wrapper');
+        if (!wrapper) return;
+
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        let autoScrollTimer;
+        let step = 1; // Pixels to scroll each interval
+        
+        function autoScroll() {
+            autoScrollTimer = setInterval(() => {
+                if (isDown) return;
+                wrapper.scrollLeft += step;
+                
+                // Reset to beginning seamlessly if scrolled to the end
+                if (wrapper.scrollLeft >= (wrapper.scrollWidth - wrapper.clientWidth - 1)) {
+                    wrapper.scrollLeft = 0;
+                }
+            }, 30);
+        }
+        
+        autoScroll();
+        
+        // Pause on mouse hover, resume when mouse leaves
+        wrapper.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
+        wrapper.addEventListener('mouseleave', autoScroll);
+        
+        // Drag to scroll functionality (mouse drag support)
+        wrapper.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+            clearInterval(autoScrollTimer);
+        });
+        
+        wrapper.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+        
+        wrapper.addEventListener('mouseup', () => {
+            isDown = false;
+            // Clear any lingering timer first to avoid multiple intervals running
+            clearInterval(autoScrollTimer);
+            autoScroll();
+        });
+        
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            wrapper.scrollLeft = scrollLeft - walk;
+        });
+    });
+    </script>
+
 </body>
 </html>
