@@ -249,13 +249,9 @@ $currency = getCurrency();
             letter-spacing: 0.5px;
         }
 
-        .hero-badge i {
-            font-size: 10px;
-        }
-
         .hero h1 {
             font-family: var(--title-font);
-            font-size: 56px;
+            font-size: 54px;
             font-weight: 800;
             line-height: 1.15;
             letter-spacing: -1.5px;
@@ -334,7 +330,7 @@ $currency = getCurrency();
             align-items: center;
             box-shadow: 0 0 40px var(--primary-glow);
             z-index: 10;
-            animation: orbit-anti-rotate 40s linear infinite; /* keep text upright */
+            animation: orbit-anti-rotate 40s linear infinite;
         }
 
         .center-logo-hub img {
@@ -367,10 +363,9 @@ $currency = getCurrency();
             font-size: 18px;
             color: var(--accent);
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            animation: orbit-anti-rotate 40s linear infinite; /* keep icons upright */
+            animation: orbit-anti-rotate 40s linear infinite;
         }
 
-        /* Position orbit nodes around the circle */
         .node-1 { top: -22px; left: calc(50% - 22px); }
         .node-2 { right: -22px; top: calc(50% - 22px); }
         .node-3 { bottom: -22px; left: calc(50% - 22px); }
@@ -388,30 +383,297 @@ $currency = getCurrency();
             to { transform: rotate(0deg); }
         }
 
-        /* Support Section (Contact Cards) */
+        /* Portfolio Section */
+        .portfolio-sec {
+            padding: 100px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .portfolio-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .portfolio-img-wrap {
+            height: 180px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, var(--bg-darker) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .portfolio-img-wrap i {
+            font-size: 64px;
+            color: var(--accent);
+        }
+
+        .portfolio-episode-tag {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .portfolio-info {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .portfolio-info h3 {
+            font-family: var(--title-font);
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            min-height: 48px;
+        }
+
+        .portfolio-plans {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .portfolio-plans span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .portfolio-plans span i {
+            color: var(--green-glow);
+        }
+
+        .portfolio-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        .portfolio-tag {
+            font-size: 10px;
+            font-weight: 700;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            color: var(--accent);
+        }
+
+        .portfolio-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Testimonials Section */
+        .reviews-sec {
+            padding: 100px 0;
+            border-top: 1px solid var(--border-color);
+            background: rgba(18,5,5,0.2);
+        }
+
+        .testimonials-wrapper {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding: 10px 0 30px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        .testimonials-wrapper::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .testimonials-wrapper::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+
+        .review-card {
+            min-width: 340px;
+            max-width: 380px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .review-card:hover {
+            border-color: var(--primary);
+        }
+
+        .stars-row {
+            color: #fbbf24;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 2px;
+        }
+
+        .review-card h4.country-tag {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .review-text {
+            font-size: 14px;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            line-height: 1.6;
+            min-height: 120px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--bg-darker);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .reviewer-meta h4 {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .reviewer-meta p {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reviewer-meta p i {
+            color: var(--green-glow);
+            font-size: 10px;
+        }
+
+        /* Payments section */
+        .payments-sec {
+            padding: 100px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .payments-trust-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            background: rgba(225,29,72,0.05);
+            border: 1px solid var(--border-color);
+            padding: 8px 18px;
+            border-radius: 30px;
+        }
+
+        .trust-badge i {
+            color: var(--primary);
+        }
+
+        .payments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .payment-method-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .payment-method-card i {
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        .payment-method-card span {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Support Section */
         .support-sec {
             padding: 100px 0;
             border-top: 1px solid var(--border-color);
             background: rgba(18,5,5,0.3);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-header h2 {
-            font-family: var(--title-font);
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 16px;
-        }
-
-        .section-header p {
-            color: var(--text-muted);
-            font-size: 16px;
-            max-width: 600px;
-            margin: 0 auto;
         }
 
         .support-grid {
@@ -602,95 +864,44 @@ $currency = getCurrency();
             gap: 10px;
         }
 
-        /* Reviews / Testimonials Section */
-        .reviews-sec {
+        /* FAQ Section */
+        .faq-sec {
             padding: 100px 0;
             border-top: 1px solid var(--border-color);
-            background: rgba(18,5,5,0.2);
-            position: relative;
         }
 
-        .testimonials-wrapper {
-            display: flex;
-            gap: 24px;
-            overflow-x: auto;
-            padding: 10px 0 30px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) transparent;
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        .testimonials-wrapper::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .testimonials-wrapper::-webkit-scrollbar-thumb {
-            background-color: var(--primary);
-            border-radius: 3px;
-        }
-
-        .review-card {
-            min-width: 320px;
-            max-width: 360px;
+        .faq-item {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-        }
-
-        .review-card:hover {
-            border-color: var(--primary);
-        }
-
-        .stars-row {
-            color: #fbbf24;
-            font-size: 13px;
+            border-radius: 12px;
+            padding: 24px;
             margin-bottom: 16px;
-            display: flex;
-            gap: 2px;
         }
 
-        .review-text {
-            font-size: 14px;
-            color: var(--text-main);
-            margin-bottom: 24px;
-            font-style: italic;
-            line-height: 1.6;
-        }
-
-        .reviewer-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .reviewer-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid var(--border-color);
-        }
-
-        .reviewer-meta h4 {
-            font-size: 14px;
+        .faq-item h3 {
+            font-family: var(--title-font);
+            font-size: 16px;
             font-weight: 700;
-        }
-
-        .reviewer-meta p {
-            font-size: 12px;
-            color: var(--text-muted);
+            margin-bottom: 8px;
+            color: #fff;
             display: flex;
+            gap: 8px;
             align-items: center;
-            gap: 6px;
         }
 
-        .reviewer-meta p img {
-            width: 16px;
-            height: 11px;
-            object-fit: cover;
+        .faq-item h3 i {
+            color: var(--primary);
+        }
+
+        .faq-item p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
         }
 
         /* Membership pricing plans */
@@ -778,7 +989,7 @@ $currency = getCurrency();
             color: var(--green-glow);
         }
 
-        /* Office Footer Locations Section */
+        /* Footer Locations Section */
         .footer-presence {
             padding: 60px 0;
             border-top: 1px solid var(--border-color);
@@ -852,17 +1063,96 @@ $currency = getCurrency();
             font-weight: 700;
         }
 
-        /* General Footer */
-        footer {
+        /* Detailed Footer */
+        footer.site-footer {
             border-top: 1px solid var(--border-color);
-            padding: 40px 0;
+            padding: 80px 0 40px;
             background: #060101;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h3 {
+            font-family: var(--title-font);
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .footer-col h4 {
+            font-family: var(--title-font);
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col ul li a {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--primary);
+            padding-left: 4px;
+        }
+
+        .footer-contact-info li {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-contact-info li i {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 40px;
             text-align: center;
         }
 
-        footer p {
-            color: var(--text-muted);
+        .footer-bottom p.copyright {
             font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .footer-bottom p.legal-note {
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.6;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
         /* Floating support badge */
@@ -893,7 +1183,7 @@ $currency = getCurrency();
                 text-align: center;
             }
             .hero h1 {
-                font-size: 42px;
+                font-size: 40px;
             }
             .hero p {
                 margin: 0 auto 30px;
@@ -903,6 +1193,10 @@ $currency = getCurrency();
             }
             .hero-stats-row {
                 justify-content: center;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
             }
         }
     </style>
@@ -918,6 +1212,7 @@ $currency = getCurrency();
             </a>
             
             <ul class="nav-links">
+                <li><a href="#portfolio">Portfolio</a></li>
                 <li><a href="#support">Support</a></li>
                 <li><a href="#products">Products</a></li>
                 <li><a href="#reviews">Testimonials</a></li>
@@ -935,19 +1230,21 @@ $currency = getCurrency();
     <section class="hero">
         <div class="container hero-grid">
             <div class="hero-content">
-                <span class="hero-badge"><i class="fas fa-circle"></i> Direct Developer Support</span>
-                <h1>Professional Custom Tools &amp; Scripts</h1>
-                <p>If your team is wasting hours on manual work or disconnected systems, we build custom solutions. Get instant access to premium browser extensions, Google Sheets automations, and custom PHP web portals, all secured with dynamic license activations.</p>
+                <span class="hero-badge"><i class="fas fa-circle"></i> Building Since 2022 · 400+ Projects Shipped to 50+ Countries</span>
+                <h1>Hire a Google Apps Script Developer</h1>
+                <p>If your team is wasting hours on manual spreadsheet work or disconnected systems — we can fix that. We build Google Sheets automations, Apps Script add-ons, and custom PHP web applications. 400+ projects shipped across 50+ countries, with 6 months of post-delivery support included.</p>
                 
                 <div class="hero-btn-group">
-                    <a href="https://wa.me/923224083545" class="btn btn-success"><i class="fab fa-whatsapp"></i> Get Quote on WhatsApp</a>
-                    <a href="#products" class="btn btn-outline">Browse Products</a>
+                    <a href="https://wa.me/923394100600" class="btn btn-success"><i class="fab fa-whatsapp"></i> Get a Free Quote on WhatsApp</a>
+                    <a href="#portfolio" class="btn btn-outline">Apps Script Projects</a>
+                    <a href="#products" class="btn btn-outline">PHP MySQL Projects</a>
                 </div>
 
                 <div class="hero-stats-row">
-                    <div class="hero-stat-item"><i class="fas fa-users"></i> 10,000+ Downloads</div>
-                    <div class="hero-stat-item"><i class="fas fa-star"></i> 4.9/5 Rating</div>
-                    <div class="hero-stat-item"><i class="fas fa-headset"></i> 6 Months Support</div>
+                    <div class="hero-stat-item"><i class="fab fa-youtube"></i> 27,400+ YouTube Subscribers</div>
+                    <div class="hero-stat-item"><i class="fas fa-star"></i> 4.9/5 Client Rating</div>
+                    <div class="hero-stat-item"><i class="fas fa-headset"></i> 6 Months Free Support</div>
+                    <div class="hero-stat-item"><i class="fas fa-bolt"></i> 24h Free Quote</div>
                 </div>
             </div>
 
@@ -971,40 +1268,131 @@ $currency = getCurrency();
         </div>
     </section>
 
+    <!-- Portfolio / Popular Apps Script Templates Section -->
+    <section class="portfolio-sec" id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <h2>Popular Apps Script Templates &amp; Source Code</h2>
+                <p>These are our most downloaded scripts — each one has a full video walkthrough on YouTube.</p>
+            </div>
+
+            <div class="portfolio-grid">
+                <!-- Project 1 -->
+                <div class="portfolio-card">
+                    <div class="portfolio-img-wrap">
+                        <i class="fas fa-columns"></i>
+                        <span class="portfolio-episode-tag">E14</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <div>
+                            <h3>Build a Complete Dynamic CRUD Web Dashboard using Google Sheets + Apps Script + React | E14</h3>
+                            <div class="portfolio-plans">
+                                <span><i class="fas fa-check"></i> Premium Plan</span>
+                                <span><i class="fas fa-check"></i> VIP Premium Plan</span>
+                            </div>
+                            <div class="portfolio-tags">
+                                <span class="portfolio-tag">Google Apps Script</span>
+                                <span class="portfolio-tag">Dashboard</span>
+                            </div>
+                        </div>
+                        <div class="portfolio-btns">
+                            <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
+                            <a href="https://wa.me/923394100600" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="portfolio-card">
+                    <div class="portfolio-img-wrap">
+                        <i class="fas fa-users-cog"></i>
+                        <span class="portfolio-episode-tag">E10</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <div>
+                            <h3>How to Build Complete HR System with Google Apps Script - Attendance, Payroll &amp; Dashboard | E10</h3>
+                            <div class="portfolio-plans">
+                                <span><i class="fas fa-check"></i> Premium Plan</span>
+                                <span><i class="fas fa-check"></i> VIP Premium Plan</span>
+                            </div>
+                            <div class="portfolio-tags">
+                                <span class="portfolio-tag">Google Apps Script</span>
+                                <span class="portfolio-tag">Attendance</span>
+                            </div>
+                        </div>
+                        <div class="portfolio-btns">
+                            <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
+                            <a href="https://wa.me/923394100600" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="portfolio-card">
+                    <div class="portfolio-img-wrap">
+                        <i class="fas fa-brain"></i>
+                        <span class="portfolio-episode-tag">F9</span>
+                    </div>
+                    <div class="portfolio-info">
+                        <div>
+                            <h3>Build Any App in Seconds Using Gemini API + Google Apps Script (No Code)</h3>
+                            <div class="portfolio-plans">
+                                <span><i class="fas fa-check"></i> Premium Plan</span>
+                                <span><i class="fas fa-check"></i> VIP Premium Plan</span>
+                            </div>
+                            <div class="portfolio-tags">
+                                <span class="portfolio-tag">Dashboard</span>
+                                <span class="portfolio-tag">Google Apps Script</span>
+                            </div>
+                        </div>
+                        <div class="portfolio-btns">
+                            <a href="login.php" class="btn btn-outline btn-sm">Watch Preview</a>
+                            <a href="https://wa.me/923394100600" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:center;">
+                <a href="#products" class="btn btn-primary" style="padding:14px 32px;"><i class="fas fa-folder-open"></i> Browse All Apps Script Files</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Support Contacts section -->
     <section class="support-sec" id="support">
         <div class="container">
             <div class="section-header">
-                <h2>Direct Channels</h2>
-                <p>Reach out to the developers directly. No bots, real support 7 days a week.</p>
+                <h2>Direct Developer Support</h2>
+                <p>Real humans, real answers — before you buy, while we build, and long after delivery. Any timezone, any day of the week.</p>
             </div>
 
             <div class="support-grid">
                 <!-- WhatsApp Card -->
                 <div class="support-card whatsapp">
                     <div class="support-icon-wrap"><i class="fab fa-whatsapp"></i></div>
-                    <h3>WhatsApp Support</h3>
-                    <p>The fastest way to reach us. Perfect for project questions, custom templates, or license activation help.</p>
+                    <h3>WhatsApp</h3>
+                    <p>The fastest way to reach us. Quotes, project questions, bug reports, or plan activation — message anytime, from any timezone.</p>
                     <span class="support-badge">Avg reply under 2 hours</span>
-                    <a href="https://wa.me/923224083545" class="btn btn-success"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+                    <a href="https://wa.me/923394100600" class="btn btn-success"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
                 </div>
 
                 <!-- Email Card -->
                 <div class="support-card email">
                     <div class="support-icon-wrap"><i class="fas fa-envelope"></i></div>
-                    <h3>Email Support</h3>
-                    <p>Prefer writing it all down? Send us your requirements, screenshots, or questions directly to our inbox.</p>
-                    <span class="support-badge">Replies within a day</span>
+                    <h3>Email</h3>
+                    <p>Prefer writing it all down? Send your requirements, screenshots, or files — you get a detailed reply with clear next steps.</p>
+                    <span class="support-badge">Replies within a few hours</span>
                     <a href="mailto:contact@rameezscripts.com" class="btn btn-primary" style="background:#dc3545; box-shadow:none;"><i class="fas fa-paper-plane"></i> contact@rameezscripts.com</a>
                 </div>
 
                 <!-- Help Desk Card -->
                 <div class="support-card chat">
                     <div class="support-icon-wrap"><i class="fas fa-headset"></i></div>
-                    <h3>Help Desk portal</h3>
-                    <p>Register an account to open official tickets. Track bug reports, get assistance, and check project milestones.</p>
+                    <h3>Support Chat &amp; Help Desk</h3>
+                    <p>Open a ticket as a guest and chat with us right on the page — you get a private tracking link, plus email and browser alerts on every reply.</p>
                     <span class="support-badge">Tracked until resolved</span>
-                    <a href="login.php" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Access Portal Logins</a>
+                    <a href="login.php" class="btn btn-outline"><i class="fas fa-comment-dots"></i> Start Support Chat</a>
                 </div>
             </div>
         </div>
@@ -1060,8 +1448,8 @@ $currency = getCurrency();
     <section class="reviews-sec" id="reviews">
         <div class="container">
             <div class="section-header">
-                <h2>What Clients Say</h2>
-                <p>Feedback directly from our international buyers and project clients.</p>
+                <h2>Client Reviews &amp; Testimonials</h2>
+                <p>Unedited feedback from actual projects — Google Sheets automations, PHP web apps, and custom builds.</p>
             </div>
 
             <div class="testimonials-wrapper">
@@ -1071,13 +1459,14 @@ $currency = getCurrency();
                         <div class="stars-row">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
-                        <p class="review-text">"Automated our entire billing process using Google Sheets and Apps Script. It saves us 20+ hours every week. The support response time is fast and the code quality is extremely solid."</p>
+                        <h4 class="country-tag">India</h4>
+                        <p class="review-text">"Rameez automated our entire school fee collection using Google Sheets and Apps Script. It saves us 20+ hours every week. The support response time is fast and the code quality is solid. Would hire again."</p>
                     </div>
                     <div class="reviewer-info">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="Avatar" class="reviewer-avatar">
+                        <div class="reviewer-avatar">RS</div>
                         <div class="reviewer-meta">
                             <h4>Rajesh Sharma</h4>
-                            <p>School Director, Mumbai</p>
+                            <p><img src="https://flagcdn.com/w20/in.png" alt="India"> School Director, Mumbai, India <i class="fas fa-check-circle" title="Verified Client"></i></p>
                         </div>
                     </div>
                 </div>
@@ -1088,13 +1477,14 @@ $currency = getCurrency();
                         <div class="stars-row">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
-                        <p class="review-text">"Outstanding Chrome extension utility! Signature verification worked smoothly, and our users could activate keys without issues. Clean interfaces and reliable delivery."</p>
+                        <h4 class="country-tag">USA</h4>
+                        <p class="review-text">"I hired Rameez to build a complete PHP &amp; MySQL inventory system with role-based access. Delivered on time, clean code, solid security. Our team across 3 states relies on it daily. Professional work, start to finish."</p>
                     </div>
                     <div class="reviewer-info">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80" alt="Avatar" class="reviewer-avatar">
+                        <div class="reviewer-avatar">MJ</div>
                         <div class="reviewer-meta">
-                            <h4>Fatima K.</h4>
-                            <p>Operations Head, Lagos</p>
+                            <h4>Michael Johnson</h4>
+                            <p><img src="https://flagcdn.com/w20/us.png" alt="USA"> Operations Manager, Texas, USA <i class="fas fa-check-circle" title="Verified Client"></i></p>
                         </div>
                     </div>
                 </div>
@@ -1105,16 +1495,161 @@ $currency = getCurrency();
                         <div class="stars-row">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
-                        <p class="review-text">"Hired him to build a custom PHP/MySQL inventory dashboard. Delivered on time, responsive support, clean logic, and secure. Highly recommended for custom developments!"</p>
+                        <h4 class="country-tag">Canada</h4>
+                        <p class="review-text">"We needed a Google Sheets dashboard to track real-time sales across our 5 stores in Canada. Rameez built it with clean charts and automated email reports. Worth every dollar."</p>
                     </div>
                     <div class="reviewer-info">
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80" alt="Avatar" class="reviewer-avatar">
+                        <div class="reviewer-avatar">DL</div>
                         <div class="reviewer-meta">
-                            <h4>Michael Johnson</h4>
-                            <p>Warehouse Owner, Toronto</p>
+                            <h4>David Laurent</h4>
+                            <p><img src="https://flagcdn.com/w20/ca.png" alt="Canada"> Retail Owner, Toronto, Canada <i class="fas fa-check-circle" title="Verified Client"></i></p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Review 4 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars-row">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="country-tag">UAE</h4>
+                        <p class="review-text">"Our company in Dubai needed a secure PHP admin panel with payment tracking and audit logs. Rameez delivered exactly what we needed — fast, secure, and clean. The support response time is quick — no waiting around."</p>
+                    </div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">AA</div>
+                        <div class="reviewer-meta">
+                            <h4>Ahmed Al Khouri</h4>
+                            <p><img src="https://flagcdn.com/w20/ae.png" alt="UAE"> CEO, Digital Solutions, Dubai, UAE <i class="fas fa-check-circle" title="Verified Client"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 5 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars-row">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="country-tag">France</h4>
+                        <p class="review-text">"I discovered Rameez Scripts on YouTube and was impressed by the tutorials. Got a custom Apps Script solution for our restaurant chain's booking system. The quality speaks for itself. Merci beaucoup!"</p>
+                    </div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">PD</div>
+                        <div class="reviewer-meta">
+                            <h4>Pierre Dubois</h4>
+                            <p><img src="https://flagcdn.com/w20/fr.png" alt="France"> Restaurant Owner, Paris, France <i class="fas fa-check-circle" title="Verified Client"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 6 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars-row">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="country-tag">Pakistan</h4>
+                        <p class="review-text">"From a simple Google Sheets template to a full PHP web app with secure login — Rameez handled everything. Clean code, good-looking UI, and solid after-delivery support. I have already referred two friends."</p>
+                    </div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">ZN</div>
+                        <div class="reviewer-meta">
+                            <h4>Zainab Noor</h4>
+                            <p><img src="https://flagcdn.com/w20/pk.png" alt="Pakistan"> Startup Founder, Islamabad, Pakistan <i class="fas fa-check-circle" title="Verified Client"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 7 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars-row">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="country-tag">Qatar</h4>
+                        <p class="review-text">"I have been following Rameez from Qatar for some time and previously purchased scripts from his platform. After testing him with two custom PHP projects, I can confidently say he exceeded my expectations on both occasions. Not only did he deliver exactly what was requested, but he also added thoughtful enhancements that elevated my initial concept into fully functional, well-structured PHP platforms. His technical expertise, attention to detail, and proactive approach truly stood out. Thank you, Rameez."</p>
+                    </div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">BM</div>
+                        <div class="reviewer-meta">
+                            <h4>BG MEGA</h4>
+                            <p><img src="https://flagcdn.com/w20/qa.png" alt="Qatar"> Client, Qatar <i class="fas fa-check-circle" title="Verified Client"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 8 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars-row">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="country-tag">UK</h4>
+                        <p class="review-text">"We run a logistics company in London and needed a warehouse management system built on PHP &amp; MySQL. Rameez delivered a fully responsive dashboard with barcode scanning, stock alerts, and role-based access — all within two weeks. Solid work and fair pricing."</p>
+                    </div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">JW</div>
+                        <div class="reviewer-meta">
+                            <h4>James W.</h4>
+                            <p><img src="https://flagcdn.com/w20/gb.png" alt="UK"> Logistics Manager, London, UK <i class="fas fa-check-circle" title="Verified Client"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 9 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars-row">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <h4 class="country-tag">Nigeria</h4>
+                        <p class="review-text">"I needed a Google Sheets automation to manage student grades and generate report cards automatically. Rameez built an Apps Script solution with email notifications and PDF exports. It handles 500+ students without slowing down. Completely changed how we handle grading."</p>
+                    </div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">FK</div>
+                        <div class="reviewer-meta">
+                            <h4>Fatima K.</h4>
+                            <p><img src="https://flagcdn.com/w20/ng.png" alt="Nigeria"> School Administrator, Lagos, Nigeria <i class="fas fa-check-circle" title="Verified Client"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:center; align-items:center; gap:20px; flex-wrap:wrap; margin-top:20px;">
+                <span style="font-size:16px; font-weight:700; color:#fff;"><i class="fas fa-star" style="color:#fbbf24;"></i> 4.9 <span style="font-weight:400; color:var(--text-muted); font-size:14px;">A few of many. See more on <a href="https://youtube.com/@rameezimdad" style="color:var(--primary); text-decoration:none;" target="_blank">YouTube →</a></span></span>
+                <a href="login.php" class="btn btn-outline btn-sm"><i class="fas fa-pen-fancy"></i> Write Your Review</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payments Section -->
+    <section class="payments-sec" id="payments">
+        <div class="container">
+            <div class="section-header">
+                <h2>Pay However Works For You</h2>
+                <p>We work with clients globally, so we accept pretty much every payment method. Pick whatever is easiest on your end.</p>
+            </div>
+
+            <div class="payments-trust-row">
+                <span class="trust-badge"><i class="fas fa-shield-alt"></i> Secure Checkout</span>
+                <span class="trust-badge"><i class="fas fa-lock"></i> SSL Encrypted</span>
+                <span class="trust-badge"><i class="fas fa-user-shield"></i> Buyer Protected</span>
+                <span class="trust-badge"><i class="fas fa-undo-alt"></i> Refund Policy Available</span>
+            </div>
+
+            <div class="payments-grid">
+                <div class="payment-method-card"><i class="fab fa-paypal" style="color:#003087;"></i><span>PayPal</span></div>
+                <div class="payment-method-card"><i class="fab fa-cc-visa" style="color:#1A1F71;"></i><span>Visa Card</span></div>
+                <div class="payment-method-card"><i class="fab fa-cc-mastercard" style="color:#EB001B;"></i><span>Mastercard</span></div>
+                <div class="payment-method-card"><i class="fab fa-cc-amex" style="color:#007CC3;"></i><span>Amex Card</span></div>
+                <div class="payment-method-card"><i class="fab fa-google-pay" style="color:#fff;"></i><span>Google Pay</span></div>
+                <div class="payment-method-card"><i class="fas fa-wallet" style="color:#002E6E;"></i><span>Paytm</span></div>
+                <div class="payment-method-card"><i class="fas fa-university" style="color:#f39c12;"></i><span>UPI</span></div>
+                <div class="payment-method-card"><i class="fas fa-money-bill-wave" style="color:#27ae60;"></i><span>Western Union</span></div>
+                <div class="payment-method-card"><i class="fab fa-bitcoin" style="color:#f2a900;"></i><span>Crypto Payment</span></div>
+                <div class="payment-method-card"><i class="fas fa-coins" style="color:#f3ba2f;"></i><span>Binance</span></div>
+                <div class="payment-method-card"><i class="fas fa-exchange-alt" style="color:#00b9ff;"></i><span>Wise</span></div>
             </div>
         </div>
     </section>
@@ -1178,12 +1713,48 @@ $currency = getCurrency();
         </div>
     </section>
 
-    <!-- Global office locations footer section -->
+    <!-- FAQ Section -->
+    <section class="faq-sec" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Help Center &amp; FAQ</h2>
+                <p>Before you message us — here are the questions most clients ask first.</p>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> What Google Sheets automation services do you offer?</h3>
+                    <p>We build customized Google Apps Script utilities, automatic report generators, data sync tunnels connecting other platforms, dynamic dashboard cards, and workflow trackers.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> How much does a custom Google Sheets or Apps Script project cost?</h3>
+                    <p>Pricing depends on structure, size, and complexity. Standard automation tasks start at low rates, while complex systems with integrations are quoted on custom scale.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Do you build PHP web applications as well?</h3>
+                    <p>Yes, we build complete custom responsive PHP/MySQL dashboards, secure portals, payment gateway verifiers, API servers, and billing databases.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> What is your typical project delivery timeline?</h3>
+                    <p>Simple tools are delivered in 2-5 days. Complex projects or full portals take 1-3 weeks. We align timelines during the initial quote phase.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Do you offer support after project delivery?</h3>
+                    <p>Every custom script/app comes with 6 months of free post-delivery support covering bug fixes, patches, and deployment assistance.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Can I see examples of your past work?</h3>
+                    <p>Yes! Check our YouTube channel "Rameez Scripts" where we show full video walkthroughs and live demos of major source code templates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global office locations Section -->
     <section class="footer-presence">
         <div class="container">
             <h3 class="presence-title">Global Presence &amp; Registry</h3>
             <div class="presence-grid">
-                <!-- India Card -->
                 <div class="presence-card">
                     <div class="presence-flag">
                         <img src="https://flagcdn.com/w40/in.png" alt="India">
@@ -1195,7 +1766,6 @@ $currency = getCurrency();
                     </div>
                 </div>
 
-                <!-- Pakistan Card -->
                 <div class="presence-card">
                     <div class="presence-flag">
                         <img src="https://flagcdn.com/w40/pk.png" alt="Pakistan">
@@ -1207,7 +1777,6 @@ $currency = getCurrency();
                     </div>
                 </div>
 
-                <!-- Canada Card -->
                 <div class="presence-card">
                     <div class="presence-flag">
                         <img src="https://flagcdn.com/w40/ca.png" alt="Canada">
@@ -1222,16 +1791,72 @@ $currency = getCurrency();
         </div>
     </section>
 
-    <!-- General Footer -->
-    <footer>
+    <!-- Detailed Footer -->
+    <footer class="site-footer">
         <div class="container">
-            <p><?php echo $branding['copyright_text']; ?></p>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3><?php echo htmlspecialchars($branding['site_name']); ?></h3>
+                    <p>We build Google Sheets automations, Apps Script tools, and PHP web apps. 400+ projects shipped to clients in 50+ countries since 2022.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="#portfolio">Apps Script Files</a></li>
+                        <li><a href="#products">Free Files</a></li>
+                        <li><a href="login.php">PHP &amp; MySQL</a></li>
+                        <li><a href="#products">Products</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="https://wa.me/923394100600">Google Sheets &amp; Apps Script</a></li>
+                        <li><a href="https://wa.me/923394100600">PHP &amp; MySQL Development</a></li>
+                        <li><a href="login.php">Security &amp; Payments</a></li>
+                        <li><a href="login.php">Custom Web Applications</a></li>
+                        <li><a href="https://wa.me/923394100600">WhatsApp Automation</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Contact Details</h4>
+                    <ul class="footer-contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> Pakistan · Canada · India</li>
+                        <li><i class="fab fa-whatsapp"></i> +923394100600</li>
+                        <li><i class="fas fa-envelope"></i> contact@rameezscripts.com</li>
+                        <li><i class="fab fa-youtube"></i> <a href="https://youtube.com/@rameezimdad" target="_blank" style="color:var(--text-muted); text-decoration:none;">YouTube Channel</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Legal &amp; Trust</h4>
+                    <ul>
+                        <li><a href="login.php">Privacy Policy</a></li>
+                        <li><a href="login.php">Terms of Service</a></li>
+                        <li><a href="login.php">Refund Policy</a></li>
+                        <li><a href="login.php">Report an Issue</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="copyright">&copy; 2022-<?php echo date('Y'); ?> Rameez Scripts. All Rights Reserved.</p>
+                <p class="legal-note">
+                    Rameez Scripts is a registered software development business owned by Mohammad Rameez Imdad, operated from Pakistan, Canada and India. All transactions are processed over secure, encrypted connections.
+                    <br>
+                    <span style="opacity: 0.8; font-weight: bold; display: block; margin-top: 8px;">Page last updated: July 2026</span>
+                </p>
+            </div>
         </div>
     </footer>
 
     <!-- Floating support badge -->
     <div class="floating-support-badge">
-        <a href="https://wa.me/923224083545" target="_blank" class="btn btn-success" style="padding: 12px 20px; border-radius: 50px; font-size:13px; box-shadow: 0 4px 15px rgba(16,185,129,0.4);"><i class="fab fa-whatsapp" style="font-size:16px;"></i> WhatsApp Support</a>
+        <a href="https://wa.me/923394100600" target="_blank" class="btn btn-success" style="padding: 12px 20px; border-radius: 50px; font-size:13px; box-shadow: 0 4px 15px rgba(16,185,129,0.4);"><i class="fab fa-whatsapp" style="font-size:16px;"></i> WhatsApp Support</a>
     </div>
 
 </body>
