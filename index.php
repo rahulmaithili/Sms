@@ -528,17 +528,12 @@ $support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulS
             gap: 24px;
             overflow-x: auto;
             padding: 10px 0 30px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) transparent;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         .testimonials-wrapper::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .testimonials-wrapper::-webkit-scrollbar-thumb {
-            background-color: var(--primary);
-            border-radius: 3px;
+            display: none;
         }
 
         .review-card {
