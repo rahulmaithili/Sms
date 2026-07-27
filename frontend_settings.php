@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_frontend_setting
         setSetting('hero_headline',            trim($_POST['hero_headline']            ?? 'Hire a Google Apps Script Developer'), $user_id);
         setSetting('hero_subtitle',            trim($_POST['hero_subtitle']            ?? 'If your team is wasting hours on manual spreadsheet work or disconnected systems — we can fix that. We build Google Sheets automations, Apps Script add-ons, and custom PHP web applications. 400+ projects shipped across 50+ countries, with 6 months of post-delivery support included.'), $user_id);
         setSetting('support_whatsapp_number',  trim($_POST['support_whatsapp_number']  ?? '+923394100600'), $user_id);
-        setSetting('support_email_address',    trim($_POST['support_email_address']    ?? 'contact@rameezscripts.com'), $user_id);
+        setSetting('support_email_address',    trim($_POST['support_email_address']    ?? 'contact@Mr.RahulScripts.com'), $user_id);
 
         logActivity($user_id, $username, 'Frontend Settings Saved', 'Updated website layout sections enable/disable controls');
         $message = 'Frontend website settings saved successfully!';
@@ -78,7 +78,7 @@ $hero_badge_text        = getSetting('hero_badge_text', 'Building Since 2022 · 
 $hero_headline          = getSetting('hero_headline', 'Hire a Google Apps Script Developer');
 $hero_subtitle          = getSetting('hero_subtitle', 'If your team is wasting hours on manual spreadsheet work or disconnected systems — we can fix that. We build Google Sheets automations, Apps Script add-ons, and custom PHP web applications. 400+ projects shipped across 50+ countries, with 6 months of post-delivery support included.');
 $support_whatsapp_number= getSetting('support_whatsapp_number', '+923394100600');
-$support_email_address  = getSetting('support_email_address', 'contact@rameezscripts.com');
+$support_email_address  = getSetting('support_email_address', 'contact@Mr.RahulScripts.com');
 
 $branding = getSiteBranding();
 ?>
@@ -86,18 +86,20 @@ $branding = getSiteBranding();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Website Frontend Controls - <?php echo htmlspecialchars($branding['site_name']); ?></title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    
+    <link rel="stylesheet" href="styles.css?v=7.0">
+
     <style>
         .settings-grid-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.2fr 0.8fr;
             gap: 24px;
+            margin-top: 20px;
         }
 
         @media (max-width: 992px) {
@@ -107,20 +109,20 @@ $branding = getSiteBranding();
         }
 
         .toggle-switch-card {
-            background: var(--card-bg, #ffffff);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color, #e0e0e0);
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             transition: all 0.3s ease;
         }
 
         .toggle-switch-card:hover {
-            border-color: var(--primary-color, #0074D9);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-color: var(--navy-accent, #0074D9);
+            transform: translateY(-2px);
         }
 
         .toggle-info {
@@ -130,35 +132,35 @@ $branding = getSiteBranding();
         }
 
         .toggle-icon {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
-            background: rgba(0, 116, 217, 0.1);
-            color: var(--primary-color, #0074D9);
+            background: rgba(0, 116, 217, 0.12);
+            color: var(--navy-accent, #0074D9);
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 18px;
+            flex-shrink: 0;
         }
 
         .toggle-title {
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--text-color, #333);
+            font-weight: 700;
+            font-size: 14px;
             margin-bottom: 2px;
         }
 
         .toggle-desc {
             font-size: 12px;
-            color: #777;
+            opacity: 0.7;
         }
 
-        /* Custom Toggle Switch */
+        /* Custom Switch */
         .switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 26px;
+            width: 52px;
+            height: 28px;
             flex-shrink: 0;
         }
 
@@ -172,21 +174,22 @@ $branding = getSiteBranding();
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
+            background-color: #cbd5e1;
+            transition: .3s;
             border-radius: 34px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 20px;
+            width: 20px;
             left: 4px;
             bottom: 4px;
             background-color: white;
-            transition: .4s;
+            transition: .3s;
             border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         input:checked + .slider {
@@ -198,38 +201,46 @@ $branding = getSiteBranding();
         }
     </style>
 </head>
-<body class="dashboard-body">
+<body>
+    <?php include 'mobile-menu.php'; ?>
 
-    <?php include 'sidebar.php'; ?>
+    <div class="app-container">
+        <?php include 'sidebar.php'; ?>
 
-    <div class="main-content">
-        <!-- Top Navbar -->
-        <header class="top-navbar">
-            <div class="navbar-left">
-                <button id="sidebar-toggle" class="sidebar-toggle-btn"><i class="fas fa-bars"></i></button>
-                <h2><i class="fas fa-desktop"></i> Website Frontend Controls</h2>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
+                <span class="breadcrumb-sep">/</span>
+                <span>System</span>
+                <span class="breadcrumb-sep">/</span>
+                <span>Frontend Controls</span>
             </div>
-            <div class="navbar-right">
-                <a href="index.php" target="_blank" class="btn btn-outline btn-sm" style="margin-right:12px;">
-                    <i class="fas fa-external-link-alt"></i> View Live Site
-                </a>
-                <div class="user-profile-menu">
-                    <span class="user-name"><?php echo htmlspecialchars($full_name); ?></span>
+
+            <!-- Page Header -->
+            <div class="header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h1><i class="fas fa-desktop"></i> Website Frontend Controls</h1>
+                    <p style="font-size:13px; opacity:0.8; margin-top:4px;">Enable/Disable website sections and customize main landing page content</p>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <a href="index.php" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px;">
+                        <i class="fas fa-external-link-alt"></i> Live Site Preview
+                    </a>
+                    <?php include 'notifications_bell.php'; ?>
                 </div>
             </div>
-        </header>
 
-        <div class="content-wrapper" style="padding: 24px;">
-            
             <?php if ($message): ?>
-            <div class="alert alert-success" style="background:#d1e7dd; color:#0f5132; padding:14px; border-radius:8px; margin-bottom:20px;">
-                <i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($message); ?>
+            <div class="alert alert-success mb-24" style="padding:14px 18px; border-radius:8px; display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-check-circle" style="font-size:18px;"></i> <?php echo htmlspecialchars($message); ?>
             </div>
             <?php endif; ?>
 
             <?php if ($error): ?>
-            <div class="alert alert-danger" style="background:#f8d7da; color:#842029; padding:14px; border-radius:8px; margin-bottom:20px;">
-                <i class="fas fa-exclamation-triangle"></i> <?php echo htmlspecialchars($error); ?>
+            <div class="alert alert-danger mb-24" style="padding:14px 18px; border-radius:8px; display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-exclamation-triangle" style="font-size:18px;"></i> <?php echo htmlspecialchars($error); ?>
             </div>
             <?php endif; ?>
 
@@ -238,12 +249,12 @@ $branding = getSiteBranding();
 
                 <div class="settings-grid-layout">
                     <!-- Column 1: Section Enable/Disable Toggles -->
-                    <div class="card" style="padding: 24px; border-radius: 12px; background: var(--card-bg, #fff);">
-                        <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--primary-color, #0074D9);">
-                            <i class="fas fa-toggle-on"></i> Section Enable / Disable Controls
-                        </h3>
-                        <p style="font-size: 13px; color: #666; margin-bottom: 20px;">
-                            Choose which sections to display or hide on your public website (<code>index.php</code>).
+                    <div class="data-section" style="margin-bottom:0;">
+                        <div class="section-header">
+                            <h2><i class="fas fa-toggle-on"></i> Homepage Section Visibility</h2>
+                        </div>
+                        <p style="font-size: 13px; opacity:0.75; margin-bottom: 20px;">
+                            Toggle ON/OFF sections to control what is displayed on your main website (<code>index.php</code>).
                         </p>
 
                         <!-- Toggle 1: Hero Orbit -->
@@ -252,7 +263,7 @@ $branding = getSiteBranding();
                                 <div class="toggle-icon"><i class="fas fa-atom"></i></div>
                                 <div>
                                     <div class="toggle-title">Hero Orbit Tech Graphic</div>
-                                    <div class="toggle-desc">Show/Hide 360° rotating tech ecosystem graphic</div>
+                                    <div class="toggle-desc">Show/Hide 360° rotating technology ecosystem graphic</div>
                                 </div>
                             </div>
                             <label class="switch">
@@ -398,44 +409,44 @@ $branding = getSiteBranding();
                     </div>
 
                     <!-- Column 2: Content Text Editing -->
-                    <div class="card" style="padding: 24px; border-radius: 12px; background: var(--card-bg, #fff);">
-                        <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--primary-color, #0074D9);">
-                            <i class="fas fa-pen"></i> Homepage Content Customization
-                        </h3>
+                    <div class="data-section" style="margin-bottom:0;">
+                        <div class="section-header">
+                            <h2><i class="fas fa-edit"></i> Landing Page Content</h2>
+                        </div>
 
                         <!-- Hero Badge -->
-                        <div class="form-group" style="margin-bottom: 18px;">
+                        <div class="form-group mb-20">
                             <label style="font-weight:600; font-size:13px; display:block; margin-bottom:6px;">Hero Badge Banner Text</label>
-                            <input type="text" name="hero_badge_text" class="form-control" value="<?php echo htmlspecialchars($hero_badge_text); ?>" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                            <input type="text" name="hero_badge_text" class="form-control filter-input" value="<?php echo htmlspecialchars($hero_badge_text); ?>" required style="width:100%; padding:10px; border-radius:6px;">
                         </div>
 
                         <!-- Hero Headline -->
-                        <div class="form-group" style="margin-bottom: 18px;">
+                        <div class="form-group mb-20">
                             <label style="font-weight:600; font-size:13px; display:block; margin-bottom:6px;">Hero Main Headline</label>
-                            <input type="text" name="hero_headline" class="form-control" value="<?php echo htmlspecialchars($hero_headline); ?>" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                            <input type="text" name="hero_headline" class="form-control filter-input" value="<?php echo htmlspecialchars($hero_headline); ?>" required style="width:100%; padding:10px; border-radius:6px;">
                         </div>
 
                         <!-- Hero Subtitle -->
-                        <div class="form-group" style="margin-bottom: 18px;">
+                        <div class="form-group mb-20">
                             <label style="font-weight:600; font-size:13px; display:block; margin-bottom:6px;">Hero Subtitle Description</label>
-                            <textarea name="hero_subtitle" class="form-control" rows="4" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; font-family:inherit;"><?php echo htmlspecialchars($hero_subtitle); ?></textarea>
+                            <textarea name="hero_subtitle" class="form-control filter-input" rows="5" style="width:100%; padding:10px; border-radius:6px; font-family:inherit; line-height:1.5;"><?php echo htmlspecialchars($hero_subtitle); ?></textarea>
                         </div>
 
                         <!-- WhatsApp Support Number -->
-                        <div class="form-group" style="margin-bottom: 18px;">
+                        <div class="form-group mb-20">
                             <label style="font-weight:600; font-size:13px; display:block; margin-bottom:6px;"><i class="fab fa-whatsapp" style="color:#10b981;"></i> WhatsApp Support Phone (with country code)</label>
-                            <input type="text" name="support_whatsapp_number" class="form-control" value="<?php echo htmlspecialchars($support_whatsapp_number); ?>" placeholder="+923394100600" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                            <input type="text" name="support_whatsapp_number" class="form-control filter-input" value="<?php echo htmlspecialchars($support_whatsapp_number); ?>" placeholder="+923394100600" style="width:100%; padding:10px; border-radius:6px;">
                         </div>
 
                         <!-- Support Email -->
-                        <div class="form-group" style="margin-bottom: 24px;">
+                        <div class="form-group mb-24">
                             <label style="font-weight:600; font-size:13px; display:block; margin-bottom:6px;"><i class="fas fa-envelope" style="color:#e11d48;"></i> Support Email Address</label>
-                            <input type="email" name="support_email_address" class="form-control" value="<?php echo htmlspecialchars($support_email_address); ?>" placeholder="contact@rameezscripts.com" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                            <input type="email" name="support_email_address" class="form-control filter-input" value="<?php echo htmlspecialchars($support_email_address); ?>" placeholder="contact@Mr.RahulScripts.com" style="width:100%; padding:10px; border-radius:6px;">
                         </div>
 
                         <!-- Submit Button -->
-                        <div style="text-align: right; border-top: 1px solid #eee; padding-top: 20px;">
-                            <button type="submit" class="btn btn-primary" style="padding: 12px 30px; font-weight: bold; background: #10b981; border: none; border-radius: 6px; color: #fff; cursor: pointer; font-size: 14px;">
+                        <div style="border-top: 1px solid var(--border-color, #eee); padding-top: 20px; text-align: right;">
+                            <button type="submit" class="btn btn-primary" style="padding: 12px 32px; font-weight: bold; background: #10b981; border: none; border-radius: 6px; color: #fff; cursor: pointer; font-size: 14px;">
                                 <i class="fas fa-save"></i> Save Frontend Controls
                             </button>
                         </div>
